@@ -1,0 +1,3098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nomads on Monad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Nomads on Monad – 4444 explorers, advanced trait systems and on-chain adventures."
+  />
+
+  <!-- Favicons and Icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/nomadsemblem.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/nomadsemblem.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/nomadsemblem.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="./assets/nomadsemblem.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="./assets/nomadsemblem.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="./assets/nomadsemblem.png">
+  <link rel="shortcut icon" href="./assets/nomadsemblem.png">
+
+  <!-- Web3 Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg: #02040a;
+      --bg-alt: #050815;
+      --accent: #4df2c2;
+      --accent-soft: rgba(77, 242, 194, 0.1);
+      --accent-strong: rgba(77, 242, 194, 0.35);
+      --accent-secondary: #46a9ff;
+      --text-main: #f7f9ff;
+      --text-muted: #9aa1c4;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --error: #ff4d6b;
+      --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.75);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-pill: 999px;
+      --transition-fast: 160ms ease-out;
+      --transition-med: 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+      --nav-blur: 18px;
+      --glow: 0 0 30px rgba(77, 242, 194, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top, #050816 0, #02040a 40%, #000 100%);
+      color: var(--text-main);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      scroll-behavior: smooth;
+      overscroll-behavior: none;
+    }
+
+    body {
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    /* Layout */
+
+    .page-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
+    .inner {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Background effects */
+
+    .bg-orbit {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.8;
+    }
+
+    .bg-orbit::before,
+    .bg-orbit::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(40px);
+      opacity: 0.18;
+      mix-blend-mode: screen;
+    }
+
+    .bg-orbit::before {
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, var(--accent) 0, transparent 60%);
+      top: -120px;
+      left: -80px;
+    }
+
+    .bg-orbit::after {
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle, var(--accent-secondary) 0, transparent 60%);
+      bottom: -160px;
+      right: -60px;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(
+          rgba(255, 255, 255, 0.04) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.035) 1px,
+          transparent 1px
+        );
+      background-size: 90px 90px;
+      opacity: 0.35;
+      mask-image: radial-gradient(circle at top, black 0, transparent 60%);
+      -webkit-mask-image: radial-gradient(circle at top, black 0, transparent 60%);
+      z-index: 0;
+    }
+
+    /* Navbar */
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(var(--nav-blur));
+      background: linear-gradient(
+        to bottom,
+        rgba(2, 4, 10, 0.88),
+        rgba(2, 4, 10, 0.75),
+        transparent
+      );
+      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px 10px;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      background-image: url('./assets/nomadsemblem.png');
+      background-size: cover;
+      background-position: center;
+      box-shadow: var(--glow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-name {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-name span:first-child {
+      font-family: "Space Grotesk", system-ui;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .brand-name span:last-child {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .nav-links a {
+      position: relative;
+      padding-bottom: 3px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+      transition: width var(--transition-fast);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      background: rgba(5, 10, 22, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(77, 242, 194, 0.7);
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 18px;
+      font-size: 12px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: linear-gradient(130deg, var(--accent), var(--accent-secondary));
+      color: #02040a;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      cursor: pointer;
+      overflow: hidden;
+      box-shadow: var(--glow);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
+    }
+
+    .btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.65), transparent 55%);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.9);
+    }
+
+    .btn:hover::before {
+      opacity: 0.9;
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: var(--shadow-soft);
+      opacity: 0.9;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: var(--text-main);
+      box-shadow: none;
+    }
+
+    .btn-outline::before {
+      display: none;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      box-shadow: var(--glow);
+      background: radial-gradient(circle at top left, rgba(77, 242, 194, 0.08), transparent 60%);
+    }
+
+    @media (max-width: 760px) {
+      .nav-links {
+        display: none;
+      }
+
+      .nav-inner {
+        padding-inline: 16px;
+      }
+
+      .pill {
+        display: none;
+      }
+    }
+
+    /* Hero */
+
+    .hero {
+      position: relative;
+      padding: 80px 0 80px;
+      overflow: hidden;
+    }
+
+    @media (min-width: 960px) {
+      .hero {
+        padding: 100px 0 90px;
+      }
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 36px;
+      align-items: center;
+    }
+
+    @media (max-width: 960px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      border-radius: var(--radius-pill);
+      padding: 5px 10px 5px 5px;
+      background: rgba(3, 8, 18, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .hero-badge-chip {
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .hero-title {
+      font-family: "Space Grotesk", system-ui;
+      font-size: clamp(32px, 5vw, 44px);
+      line-height: 1.1;
+      margin-bottom: 18px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #ffffff, #e0fdf6, var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      max-width: 470px;
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .hero-kpis {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 26px;
+      font-size: 12px;
+    }
+
+    .hero-kpi {
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: radial-gradient(circle at top left, rgba(77, 242, 194, 0.14), rgba(5, 8, 18, 0.95));
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-kpi-label {
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      font-size: 10px;
+    }
+
+    .hero-kpi-value {
+      font-family: "Space Grotesk", system-ui;
+      font-weight: 500;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .hero-secondary-text {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .hero-secondary-text span {
+      color: var(--accent);
+    }
+
+    .hero-footnote {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      max-width: 420px;
+    }
+
+    /* Hero right card */
+
+    .hero-right {
+      position: relative;
+      min-height: 260px;
+    }
+
+    .hero-card {
+      position: relative;
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at top, #050a18, #02040a 65%, #000 100%);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      transform-style: preserve-3d;
+      isolation: isolate;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(77, 242, 194, 0.32), transparent 55%),
+        radial-gradient(circle at 90% 20%, rgba(70, 169, 255, 0.24), transparent 55%),
+        radial-gradient(circle at 50% 110%, rgba(77, 242, 194, 0.18), transparent 55%);
+      opacity: 0.5;
+      mix-blend-mode: screen;
+    }
+
+    .hero-card-header {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      z-index: 1;
+    }
+
+    .hero-chip-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-chip {
+      border-radius: var(--radius-pill);
+      padding: 4px 9px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--accent);
+      background: rgba(2, 8, 18, 0.9);
+      border: 1px solid rgba(77, 242, 194, 0.5);
+      box-shadow: 0 0 16px rgba(77, 242, 194, 0.46);
+    }
+
+    .hero-chip-secondary {
+      border-radius: var(--radius-pill);
+      padding: 4px 8px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--text-muted);
+      background: rgba(2, 6, 14, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .hero-card-status {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .hero-card-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #4df2c2;
+      box-shadow: 0 0 12px rgba(77, 242, 194, 0.8);
+      animation: pulse 1.4s ease-out infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.9);
+        opacity: 0.9;
+      }
+      70% {
+        transform: scale(1.35);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+    }
+
+    .hero-card-main {
+      position: relative;
+      border-radius: 18px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: radial-gradient(circle at top left, rgba(77, 242, 194, 0.08), rgba(5, 8, 18, 0.96));
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    @media (max-width: 520px) {
+      .hero-card-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-card-art-wrap {
+      border-radius: 14px;
+      padding: 6px;
+      background:
+        linear-gradient(145deg, rgba(77, 242, 194, 0.3), rgba(70, 169, 255, 0.15)),
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.3), transparent 50%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card-art-inner {
+      border-radius: 12px;
+      background: radial-gradient(circle at 50% 0, #1c2336 0, #040712 60%, #000 100%);
+      border: 1px solid rgba(0, 0, 0, 0.9);
+      padding: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card-art-inner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(
+          rgba(255, 255, 255, 0.018) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.02) 1px,
+          transparent 1px
+        );
+      background-size: 30px 30px;
+      mix-blend-mode: soft-light;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    /* Hero image container */
+    .hero-dog {
+      position: relative;
+      border-radius: 10px;
+      background: #000;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
+    }
+
+    .hero-dog img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-dog-label {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      border-radius: var(--radius-pill);
+      padding: 4px 9px;
+      background: rgba(2, 4, 10, 0.86);
+      color: #f8feff;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-dog-label span {
+      color: var(--accent);
+    }
+
+    .hero-card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .meta-tag {
+      border-radius: var(--radius-pill);
+      padding: 4px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(2, 6, 16, 0.95);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .meta-label {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+
+    .meta-value {
+      color: #e7f7ff;
+      font-family: "Space Grotesk", system-ui;
+    }
+
+    .hero-card-footer {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .hero-card-note {
+      max-width: 240px;
+    }
+
+    .hero-card-progress {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .progress-bar {
+      position: relative;
+      width: 130px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      position: absolute;
+      inset: 0;
+      width: 40%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+      box-shadow: var(--glow);
+      transform-origin: left;
+    }
+
+    .progress-label {
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      font-size: 9px;
+    }
+
+    /* Sections */
+
+    section {
+      padding: 48px 0;
+      position: relative;
+    }
+
+    @media (min-width: 960px) {
+      section {
+        padding: 64px 0;
+      }
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+
+    .section-title {
+      font-family: "Space Grotesk", system-ui;
+      font-size: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .section-subtitle {
+      max-width: 430px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .section-tag {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    @media (max-width: 720px) {
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    /* About / Lore */
+
+    .card-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 960px) {
+      .card-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      border-radius: var(--radius-md);
+      padding: 18px 18px 16px;
+      background: radial-gradient(circle at top, rgba(77, 242, 194, 0.1), #050815 52%, #02040a 100%);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-outline {
+      background: rgba(3, 7, 18, 0.96);
+      border-style: dashed;
+      box-shadow: none;
+    }
+
+    .card-label {
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-family: "Space Grotesk", system-ui;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .card-body {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .card-body p + p {
+      margin-top: 10px;
+    }
+
+    .card-list {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .card-list li {
+      margin-bottom: 6px;
+      list-style: none;
+      position: relative;
+      padding-left: 16px;
+    }
+
+    .card-list li::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 8px;
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+    }
+
+    /* Traits /  section */
+
+    .highlight-card {
+      border-radius: var(--radius-md);
+      padding: 16px;
+      background: radial-gradient(circle at top, rgba(70, 169, 255, 0.12), #050815 52%, #02040a 100%);
+      border: 1px solid rgba(70, 169, 255, 0.5);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .highlight-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at top, rgba(70, 169, 255, 0.45), transparent 55%);
+      opacity: 0.38;
+      mix-blend-mode: screen;
+    }
+
+    .highlight-inner {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .highlight-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .highlight-copy {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .highlight-copy p + p {
+      margin-top: 8px;
+    }
+
+    .chip-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: var(--radius-pill);
+      padding: 3px 9px;
+      background: rgba(2, 4, 14, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      margin-bottom: 8px;
+    }
+
+    .chip-inline span {
+      color: var(--accent-secondary);
+    }
+
+    .highlight-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .badge-soft {
+      border-radius: var(--radius-pill);
+      padding: 4px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(2, 6, 18, 0.9);
+      font-size: 11px;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-soft span {
+      color: var(--accent);
+      font-family: "Space Grotesk", system-ui;
+    }
+
+    /* Placeholder  trait video / image */
+
+    .scientist-media {
+      position: relative;
+      border-radius: 16px;
+      padding: 10px;
+      background: radial-gradient(circle at 0 0, rgba(77, 242, 194, 0.5), rgba(3, 7, 18, 1));
+      overflow: hidden;
+    }
+
+    .scientist-media-inner {
+      position: relative;
+      border-radius: 13px;
+      background: #02040a;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+    }
+
+    .scientist-placeholder {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: radial-gradient(circle at 20% 0, #76ffe2, #15192c 40%, #02040a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(2, 4, 10, 0.85);
+      font-family: "Space Grotesk", system-ui;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+
+    .scientist-tag {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      border-radius: var(--radius-pill);
+      padding: 4px 9px;
+      background: rgba(2, 4, 10, 0.86);
+      color: #f8feff;
+      font-size: 10px;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .scientist-tag span {
+      color: var(--accent-secondary);
+    }
+
+    /* Mint section */
+
+    .mint-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 960px) {
+      .mint-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mint-card-main {
+      border-radius: var(--radius-md);
+      padding: 18px 18px 16px;
+      background: radial-gradient(circle at top, rgba(77, 242, 194, 0.12), #050815 52%, #02040a 100%);
+      border: 1px solid rgba(77, 242, 194, 0.4);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .mint-pricing-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .mint-price {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .mint-price-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+
+    .mint-price-value {
+      font-family: "Space Grotesk", system-ui;
+      font-size: 20px;
+    }
+
+    .mint-price-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .mint-supply {
+      display: flex;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .mint-supply-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mint-supply-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .mint-supply-value {
+      font-family: "Space Grotesk", system-ui;
+      color: #e7f7ff;
+    }
+
+    .mint-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .mint-counter {
+      display: inline-flex;
+      align-items: center;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(2, 6, 18, 0.96);
+      padding: 5px 8px;
+      gap: 2px;
+    }
+
+    .mint-counter-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-main);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .mint-counter-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .mint-counter-value-wrap {
+      padding: 0 10px;
+      min-width: 44px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .mint-counter-value {
+      font-family: "Space Grotesk", system-ui;
+      font-size: 16px;
+    }
+
+    .mint-counter-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    .mint-total {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .mint-total span {
+      color: var(--accent);
+      font-family: "Space Grotesk", system-ui;
+    }
+
+    .mint-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .mint-note span {
+      color: var(--accent-secondary);
+    }
+
+    .mint-side {
+      font-size: 12px;
+      color: var(--text-muted);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      background: rgba(2, 6, 18, 0.96);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .mint-side h4 {
+      font-family: "Space Grotesk", system-ui;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .mint-side-list {
+      list-style: none;
+      margin-top: 6px;
+    }
+
+    .mint-side-list li {
+      margin-bottom: 6px;
+      position: relative;
+      padding-left: 16px;
+    }
+
+    .mint-side-list li::before {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 8px;
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+    }
+
+    /* Roadmap */
+
+    .roadmap-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 960px) {
+      .roadmap-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .timeline {
+      border-radius: var(--radius-md);
+      padding: 16px 14px;
+      background: rgba(2, 6, 18, 0.96);
+      border: 1px solid var(--border-subtle);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 16px;
+      top: 12px;
+      bottom: 12px;
+      width: 2px;
+      border-radius: 999px;
+      background: linear-gradient(
+        to bottom,
+        rgba(77, 242, 194, 0.8),
+        rgba(70, 169, 255, 0.4),
+        rgba(255, 255, 255, 0)
+      );
+      opacity: 0.9;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 32px;
+      margin-bottom: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .timeline-item.active {
+      padding: 12px;
+      padding-left: 44px;
+      margin-left: -12px;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(255, 165, 0, 0.05));
+      border-radius: 8px;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+      animation: phase-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes phase-pulse {
+      0%, 100% { 
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.2), 0 0 60px rgba(255, 215, 0, 0.1);
+        border-color: rgba(255, 215, 0, 0.3);
+      }
+      50% { 
+        box-shadow: 0 0 40px rgba(255, 215, 0, 0.4), 0 0 80px rgba(255, 215, 0, 0.2);
+        border-color: rgba(255, 215, 0, 0.5);
+      }
+    }
+
+    .timeline-item.active .timeline-label {
+      color: #FFD700;
+      font-weight: 600;
+    }
+
+    .timeline-item.active .timeline-title {
+      color: #FFA500;
+      font-weight: 600;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: 10px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #02040a;
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 18px rgba(77, 242, 194, 0.7);
+    }
+
+    .timeline-item.active .timeline-dot {
+      background: #FFD700;
+      border: 2px solid #FFA500;
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.9), 0 0 40px rgba(255, 165, 0, 0.6);
+      animation: dot-shine 1.5s ease-in-out infinite;
+    }
+
+    @keyframes dot-shine {
+      0%, 100% { 
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.9), 0 0 40px rgba(255, 165, 0, 0.6);
+        transform: scale(1);
+      }
+      50% { 
+        box-shadow: 0 0 35px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 165, 0, 0.8);
+        transform: scale(1.1);
+      }
+    }
+
+    .timeline-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: var(--text-muted);
+    }
+
+    .timeline-title {
+      font-family: "Space Grotesk", system-ui;
+      font-size: 13px;
+      margin-top: 1px;
+      margin-bottom: 2px;
+    }
+
+    .timeline-body {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* FAQ */
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 960px) {
+      .faq-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .faq-item {
+      border-radius: var(--radius-md);
+      padding: 12px 12px 10px;
+      background: rgba(2, 6, 18, 0.96);
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 8px;
+    }
+
+    .faq-q {
+      font-size: 13px;
+      font-family: "Space Grotesk", system-ui;
+      margin-bottom: 4px;
+    }
+
+    .faq-a {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(2, 4, 10, 0.96);
+      margin-top: 36px;
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 16px 20px 18px;
+      font-size: 11px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-links a {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 10px;
+    }
+
+    /* Expandable Trait Cards */
+    .trait-card {
+      cursor: pointer;
+      transition: all var(--transition-med);
+    }
+
+    .trait-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(77, 242, 194, 0.2);
+    }
+
+    .trait-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .trait-expand-icon {
+      font-size: 18px;
+      transition: transform var(--transition-med);
+      color: var(--accent);
+    }
+
+    .trait-card.expanded .trait-expand-icon {
+      transform: rotate(180deg);
+    }
+
+    .trait-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height var(--transition-med) ease-out;
+    }
+
+    .trait-card.expanded .trait-details {
+      max-height: 1000px;
+      transition: max-height var(--transition-med) ease-in;
+    }
+
+    .trait-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      margin: 4px;
+      border-radius: var(--radius-pill);
+      background: rgba(2, 6, 18, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 10px;
+    }
+
+    .trait-count {
+      color: var(--text-muted);
+      font-size: 9px;
+    }
+
+    .live-stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      background: rgba(77, 242, 194, 0.1);
+      border: 1px solid rgba(77, 242, 194, 0.3);
+      font-size: 11px;
+      color: var(--accent);
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 10px rgba(77, 242, 194, 0.3); }
+      50% { box-shadow: 0 0 20px rgba(77, 242, 194, 0.5); }
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      animation: pulse 1.4s ease-out infinite;
+    }
+
+    /* Parallax utilities */
+
+    .parallax-layer {
+      will-change: transform;
+      transform-style: preserve-3d;
+    }
+
+    .parallax-slow {
+      transform: translate3d(0, 0, 0);
+    }
+
+    .parallax-fast {
+      transform: translate3d(0, 0, 0);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-shell">
+    <div class="bg-orbit parallax-layer parallax-slow" data-parallax-speed="0.25"></div>
+    <div class="grid-overlay"></div>
+
+    <!-- NAVBAR -->
+    <header class="nav">
+      <div class="nav-inner">
+        <a href="#top" class="brand">
+          <div class="brand-logo"></div>
+          <div class="brand-name">
+            <span>Nomads</span>
+            <span>On Monad</span>
+          </div>
+        </a>
+        <nav class="nav-links">
+          <a href="#about">About</a>
+          <a href="#mint">Mint</a>
+          <a href="#traits">Traits</a>
+          <a href="#pitbits">Origin</a>
+          <a href="#staking">Staking</a>
+          <a href="#roadmap">Roadmap</a>
+          <a href="#creator">Creator</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+        <div class="nav-cta">
+          <div class="pill">
+            <div class="pill-dot"></div>
+            <span>Mint live</span>
+          </div>
+          <button class="btn btn-outline" onclick="scrollToSection('mint')">
+            <span>Mint now</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <!-- HERO -->
+      <section class="hero">
+        <div class="inner">
+          <div class="hero-grid">
+            <div>
+              <h1 class="hero-title">
+                Nomad <span>Dogs on Monad</span>.
+              </h1>
+              <p class="hero-subtitle">
+                A collection of 4444 Nomad Dogs exploring the Monad frontier. Over 186 unique traits, non-custodial staking rewards. Reserved NFTs for Pitbits holders.
+              </p>
+
+              <div class="hero-kpis">
+                <div class="hero-kpi">
+                  <div class="hero-kpi-label">Mint</div>
+                  <div class="hero-kpi-value">50&nbsp;$MON <span id="hero-usd-price" style="font-size: 14px; color: var(--text-muted);"></span></div>
+                </div>
+                <div class="hero-kpi">
+                  <div class="hero-kpi-label">Total supply</div>
+                  <div class="hero-kpi-value">4444</div>
+                </div>
+                <div class="hero-kpi">
+                  <div class="hero-kpi-label">Reserved</div>
+                  <div class="hero-kpi-value">999</div>
+                </div>
+              </div>
+
+              <div class="hero-cta-row">
+                <button class="btn" onclick="scrollToSection('mint')">
+                  <span>Mint your Nomad Dog</span>
+                </button>
+                <button class="btn btn-outline" onclick="scrollToSection('staking')">
+                  <span>View Staking Info</span>
+                </button>
+              </div>
+
+              <p class="hero-secondary-text">
+                Holders unlock <span>exclusive access</span> to staking rewards, development updates, future airdrops, and the private holder portal.
+              </p>
+              <p class="hero-footnote">
+                No whitelist. Just a clean mint on Monad with non-custodial staking.
+              </p>
+            </div>
+
+            <div class="hero-right">
+              <div class="hero-card parallax-layer parallax-fast" data-parallax-speed="0.5">
+                <div class="hero-card-header">
+                  <div class="hero-chip-row">
+                    <div class="hero-chip">Nomad Dogs</div>
+                    <div class="hero-chip-secondary">186 Unique Traits</div>
+                    <div class="hero-chip-secondary" id="hero-card-usd-chip" style="background: rgba(77, 242, 194, 0.15); border: 1px solid rgba(77, 242, 194, 0.3); color: var(--accent);"></div>
+                  </div>
+                  <div class="hero-card-status">
+                    <div class="hero-card-status-dot"></div>
+                    Live on Monad
+                  </div>
+                </div>
+
+                <div class="hero-card-main">
+                  <div class="hero-card-art-wrap">
+                    <div class="hero-card-art-inner">
+                      <div class="hero-dog">
+                        <img src="./assets/nomaddogs.gif" alt="Nomad Dogs Collection" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                        <div class="hero-dog-label">
+                          <span>Nomads</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="hero-card-meta">
+                    <div class="meta-row">
+                      <div class="meta-tag">
+                        <div class="meta-label">Type</div>
+                        <div class="meta-value">Nomad</div>
+                      </div>
+                      <div class="meta-tag">
+                        <div class="meta-label">Chain</div>
+                        <div class="meta-value">Monad</div>
+                      </div>
+                    </div>
+                    <div class="meta-row">
+                      <div class="meta-tag">
+                        <div class="meta-label">Mint</div>
+                        <div class="meta-value">50&nbsp;$MON</div>
+                      </div>
+                      <div class="meta-tag">
+                        <div class="meta-label">Max / wallet</div>
+                        <div class="meta-value">20</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="hero-card-footer">
+                  <div class="hero-card-note">
+                    Nomad Dogs feature 186 randomized traits. Holders unlock staking rewards and exclusive benefits.
+                  </div>
+                  <div class="hero-card-progress">
+                    <div class="progress-label">Mint progress</div>
+                    <div class="progress-bar">
+                      <div class="progress-bar-fill" id="hero-progress-fill"></div>
+                    </div>
+                    <div class="progress-label" id="hero-progress-text">0 / 4444</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="about">
+        <div class="inner">
+          <div class="section-header">
+            <div>
+              <div class="section-tag">The collection</div>
+              <h2 class="section-title">Nomads on Monad</h2>
+            </div>
+            <div class="section-subtitle">
+              Built as a modular, future‑proof set of explorers. Each Nomad is a clean base layer designed to carry
+              traits, lore, and integrations as the Monad ecosystem unfolds.
+            </div>
+          </div>
+
+          <div class="card-row">
+            <article class="card">
+              <div class="card-label">The Collection</div>
+              <h3 class="card-title">4444 Nomad Dogs. Built by NifftySwiggle.</h3>
+              <div class="card-body">
+                <p>
+                  Nomad Dogs are the first wave of explorers on Monad — independent holders supporting real Web3 development. Created by <strong>NifftySwiggle</strong>, an independent builder growing rapidly across the ecosystem.
+                </p>
+                <p>
+                  Each Nomad Dog features traits from a pool of over <strong>186 unique attributes</strong>, creating diverse and collectible combinations. Holders gain access to exclusive benefits, staking rewards, and behind-the-scenes development updates.
+                </p>
+                <ul class="card-list">
+                  <li><strong>186 Traits:</strong> Diverse, randomized attributes for each Nomad Dog.</li>
+                  <li><strong>Holder Benefits:</strong> Exclusive portal access, airdrops, and early tools.</li>
+                  <li><strong>Non-Custodial Staking:</strong> Earn rewards while keeping NFTs in your wallet.</li>
+                  <li><strong>Support a Builder:</strong> Your mint funds new tools and ecosystem growth.</li>
+                </ul>
+                <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
+                  <a href="https://magiceden.io/collections/monad/0xbD11e8799E1D48fe607B6a471C66de84522e49c1" target="_blank" rel="noopener noreferrer" class="btn" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <span>View on Magic Eden</span>
+                    <span style="font-size: 18px;">→</span>
+                  </a>
+                  <a href="https://opensea.io/collection/nomads-201731784" target="_blank" rel="noopener noreferrer" class="btn" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <span>View on OpenSea</span>
+                    <span style="font-size: 18px;">→</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <aside class="card card-outline">
+              <div class="card-label">Spec sheet</div>
+              <h3 class="card-title">Mint parameters</h3>
+              <div class="card-body">
+                <p>Transparent numbers. No hidden gotchas.</p>
+                <ul class="card-list">
+                  <li><strong>Supply:</strong> 4444 total Nomads.</li>
+                  <li><strong>Mint:</strong> 50&nbsp;$MON per Nomad <span id="about-usd-price" style="color: var(--text-muted);"></span></li>
+                  <li><strong>Reserved:</strong> 999 for collabs, airdrops, and ecosystem alignment.</li>
+                  <li><strong>Max per wallet:</strong> 20 (Subject to change).</li>
+                  <li><strong>Chain:</strong> Monad mainnet.</li>
+                </ul>
+                <p style="margin-top: 10px; font-size: 12px;">
+                  The goal: keep mint accessible, distribution fair, and long‑term building viable.
+                </p>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- MINT -->
+      <section id="mint">
+        <div class="inner">
+          <div class="section-header">
+            <div>
+              <div class="section-tag">Mint</div>
+              <h2 class="section-title">Connect & claim</h2>
+            </div>
+            <div class="section-subtitle">
+              Clean, public mint. No whitelist, no allowlist spreadsheets. Just connect your wallet on Monad
+              and choose how many Nomads to bring into your convoy.
+            </div>
+          </div>
+
+          <div class="mint-grid">
+            <div class="mint-card-main">
+              <div class="mint-pricing-row">
+                <div class="mint-price">
+                  <span class="mint-price-label">Price per Nomad</span>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="mint-price-value">50&nbsp;$MON <span id="mint-usd-price" style="font-size: 13px; color: var(--text-muted);"></span></span>
+                    <div class="live-stat" style="font-size: 10px; padding: 4px 8px;">
+                      <div class="live-dot"></div>
+                      <span style="font-weight: 500;">LIVE PRICE</span>
+                    </div>
+                  </div>
+                  <span class="mint-price-sub">Gas on top. Chain: Monad.</span>
+                </div>
+                <div class="mint-supply">
+                  <div class="mint-supply-item">
+                    <span class="mint-supply-label">Total supply</span>
+                    <span class="mint-supply-value">4444</span>
+                  </div>
+                  <div class="mint-supply-item">
+                    <span class="mint-supply-label">Reserved</span>
+                    <span class="mint-supply-value">999</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: 24px;">
+                <iframe id='iframe-widget' src='https://0xbd11e8799e1d48fe607b6a471c66de84522e49c1_143.nfts2.me/?widget=classic&hideBanner=true&primaryColor=4df2c2&backgroundColor=02040a&textColor=f7f9ff' style="height: 515px; width: 100%; border: none; border-radius: 12px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);"></iframe>
+              </div>
+
+              <p class="mint-note">
+                <span>No whitelist.</span> Max mints per wallet are enforced at contract level. Connect your Monad wallet above to mint.
+              </p>
+            </div>
+
+            <aside class="mint-side">
+              <h4>How minting works</h4>
+              <p>
+                Connect your wallet on Monad, choose your Nomad count, and confirm your transaction. Art and traits are
+                revealed as per the collection config (instant or delayed).
+              </p>
+              <ul class="mint-side-list">
+                <li>Mint from this site or directly from the contract if you prefer.</li>
+                <li>Reserved supply is held for Pitbit holders.</li>
+              </ul>
+              <p style="margin-top: 8px;">
+                Contract and explorer links will appear here once deployment is live.
+              </p>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- PITBITS EVOLUTION -->
+      <section id="pitbits" style="background: linear-gradient(135deg, rgba(77, 242, 194, 0.03), rgba(70, 169, 255, 0.03)); padding: 60px 0;">
+        <div class="inner">
+          <div class="section-header">
+            <div>
+              <div class="section-tag" style="color: #4df2c2;">Origin Story</div>
+              <h2 class="section-title">From Pitbits to Nomad Dogs</h2>
+            </div>
+            <div class="section-subtitle">
+              The Pitbits discovered a portal to Monad — a dimension where speed and energy reshape everything. While the original Pitbits continue their journey on Cronos, their evolution into Nomad Dogs represents a new chapter on a different chain.
+            </div>
+          </div>
+
+          <div class="card-row">
+            <article class="card" style="border: 1px solid rgba(77, 242, 194, 0.2);">
+              <div class="card-label" style="color: #4df2c2;">Still Active on Cronos</div>
+              <h3 class="card-title">Pitbits Continue</h3>
+              <div class="card-body">
+                <p>
+                  The <strong>Pitbits</strong> live on the Cronos blockchain — a pixelated, experimental NFT collection that's still active and thriving. Each Pitbit carries distinct traits and a spirit of exploration, representing the original vision.
+                </p>
+                <p>
+                  These aren't gone or replaced. The Pitbits community remains strong on Cronos. They represent the foundation — the original believers who supported the vision from day one.
+                </p>
+                <p>
+                  Pitbits are also available for staking on the same non-custodial platform that supports Nomad Dogs, allowing holders to earn rewards while keeping full ownership of their NFTs.
+                </p>
+                <ul class="card-list">
+                  <li><strong>Chain:</strong> Cronos (CRO) — Still Active</li>
+                  <li><strong>Collection Type:</strong> Pixelated, experimental NFTs</li>
+                  <li><strong>Status:</strong> Ongoing</li>
+                  <li><strong>Staking:</strong> Available on Gaia non-custodial platform</li>
+                  <li><strong>Community:</strong> Original holders and explorers</li>
+                </ul>
+                <a href="https://allstake.io/launches/pitbits" target="_blank" rel="noopener noreferrer" class="btn" style="margin-top: 16px; display: inline-flex; align-items: center; gap: 8px;">
+                  <span>Mint Pitbits on Cronos</span>
+                  <span style="font-size: 11px; opacity: 0.9;">99 CRO</span>
+                </a>
+              </div>
+            </article>
+
+            <article class="card" style="border: 1px solid rgba(77, 242, 194, 0.2);">
+              <div class="card-label" style="color: #4df2c2;">Parallel Evolution</div>
+              <h3 class="card-title">Nomad Dogs on Monad</h3>
+              <div class="card-body">
+                <p>
+                  Nomad Dogs are a <strong>parallel evolution</strong> — not a replacement, but a new life on an alternate network. Built as <strong>fully vector-rebuilt</strong> versions with cleaner lines, sharper detail, and richer traits, they're designed for Monad's high-speed capabilities.
+                </p>
+                <p>
+                  Think of it as a multiverse: Pitbits thrive on Cronos while Nomad Dogs explore Monad. Both collections exist, both have value, and holders of the original Pitbits receive special recognition in the Nomad Dogs ecosystem.
+                </p>
+                <ul class="card-list">
+                  <li><strong>Chain:</strong> Monad (MON) — New Territory</li>
+                  <li><strong>Art Style:</strong> Fully vector, high-detail upgrades</li>
+                  <li><strong>Traits:</strong> 186 attributes across 8 categories</li>
+                  <li><strong>Relationship:</strong> Spiritual successor, not replacement</li>
+                </ul>
+                <div style="margin-top: 16px; padding: 12px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.3);">
+                  <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: #FFD700;">
+                    <span style="font-size: 16px;">ℹ️</span>
+                    <strong>Reserved for Pitbit Holders:</strong>
+                  </div>
+                  <p style="font-size: 11px; margin-top: 6px; color: var(--text-muted);">
+                    A portion of the Nomad Dogs supply is reserved exclusively for original Pitbits holders as a thank-you for supporting the journey. Both collections live on — Cronos and Monad, side by side.
+                  </p>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRAITS -->
+      <section id="traits">
+        <div class="inner">
+          <div class="section-header">
+            <div>
+              <div class="section-tag">Traits</div>
+              <h2 class="section-title">186 Unique Attributes</h2>
+            </div>
+            <div class="section-subtitle">
+              Each Nomad Dog is generated from 186 unique traits across 8 categories. Every combination is randomized, creating a diverse collection of 4444 unique explorers.
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
+            <div class="live-stat">
+              <div class="live-dot"></div>
+              <span>Minted: <strong id="liveMintCount">Loading...</strong> / 4444</span>
+            </div>
+            <div class="live-stat">
+              <span>Available: <strong id="liveAvailable">Loading...</strong></span>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px; justify-items: center;">
+
+            <div class="card trait-card" onclick="toggleTrait(this)">
+              <div class="trait-card-header">
+                <div>
+                  <div class="card-label">Background</div>
+                  <h3 class="card-title">22 Variations</h3>
+                </div>
+                <div class="trait-expand-icon">▼</div>
+              </div>
+              <div class="card-body">
+                <p style="margin-bottom: 8px;">Click to expand and see all 22 traits</p>
+                <div class="trait-details">
+                  <div class="trait-item"><span>Blue</span><span class="trait-count">(288)</span></div>
+                  <div class="trait-item"><span>Orange</span><span class="trait-count">(268)</span></div>
+                  <div class="trait-item"><span>Mint</span><span class="trait-count">(265)</span></div>
+                  <div class="trait-item"><span>Green</span><span class="trait-count">(258)</span></div>
+                  <div class="trait-item"><span>Pale</span><span class="trait-count">(256)</span></div>
+                  <div class="trait-item"><span>White</span><span class="trait-count">(250)</span></div>
+                  <div class="trait-item"><span>Pink</span><span class="trait-count">(249)</span></div>
+                  <div class="trait-item"><span>Teal</span><span class="trait-count">(246)</span></div>
+                  <div class="trait-item"><span>Yellow</span><span class="trait-count">(242)</span></div>
+                  <div class="trait-item"><span>Grey</span><span class="trait-count">(242)</span></div>
+                  <div class="trait-item"><span>Sage</span><span class="trait-count">(236)</span></div>
+                  <div class="trait-item"><span>Purple</span><span class="trait-count">(233)</span></div>
+                  <div class="trait-item"><span>Red</span><span class="trait-count">(230)</span></div>
+                  <div class="trait-item"><span>Reef</span><span class="trait-count">(229)</span></div>
+                  <div class="trait-item"><span>Purple Burst</span><span class="trait-count">(138)</span></div>
+                  <div class="trait-item"><span>Yellow Burst</span><span class="trait-count">(128)</span></div>
+                  <div class="trait-item"><span>Aqua Burst</span><span class="trait-count">(127)</span></div>
+                  <div class="trait-item"><span>Pink Burst</span><span class="trait-count">(120)</span></div>
+                  <div class="trait-item"><span>Green Burst</span><span class="trait-count">(119)</span></div>
+                  <div class="trait-item"><span>Blue Burst</span><span class="trait-count">(111)</span></div>
+                  <div class="trait-item"><span>Orange Burst</span><span class="trait-count">(106)</span></div>
+                  <div class="trait-item"><span>Red Burst</span><span class="trait-count">(103)</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="card trait-card" onclick="toggleTrait(this)">
+              <div class="trait-card-header">
+                <div>
+                  <div class="card-label">Back</div>
+                  <h3 class="card-title">32 Variations</h3>
+                </div>
+                <div class="trait-expand-icon">▼</div>
+              </div>
+              <div class="card-body">
+                <p style="margin-bottom: 8px;">Click to expand and see all 32 traits</p>
+                <div class="trait-details">
+                  <div class="trait-item"><span>Umbrella</span><span class="trait-count">(235)</span></div>
+                  <div class="trait-item"><span>Sword</span><span class="trait-count">(215)</span></div>
+                  <div class="trait-item"><span>Sack</span><span class="trait-count">(210)</span></div>
+                  <div class="trait-item"><span>Fishing Pole</span><span class="trait-count">(202)</span></div>
+                  <div class="trait-item"><span>Black Backpack</span><span class="trait-count">(195)</span></div>
+                  <div class="trait-item"><span>Blue Backpack</span><span class="trait-count">(193)</span></div>
+                  <div class="trait-item"><span>Baseball Bat</span><span class="trait-count">(191)</span></div>
+                  <div class="trait-item"><span>Brush</span><span class="trait-count">(191)</span></div>
+                  <div class="trait-item"><span>Stick</span><span class="trait-count">(190)</span></div>
+                  <div class="trait-item"><span>Short Sword</span><span class="trait-count">(188)</span></div>
+                  <div class="trait-item"><span>Net</span><span class="trait-count">(183)</span></div>
+                  <div class="trait-item"><span>Green Backpack</span><span class="trait-count">(162)</span></div>
+                  <div class="trait-item"><span>Axe</span><span class="trait-count">(138)</span></div>
+                  <div class="trait-item"><span>Bread Stick</span><span class="trait-count">(130)</span></div>
+                  <div class="trait-item"><span>Pickaxe</span><span class="trait-count">(128)</span></div>
+                  <div class="trait-item"><span>Rocket</span><span class="trait-count">(118)</span></div>
+                  <div class="trait-item"><span>Bow</span><span class="trait-count">(117)</span></div>
+                  <div class="trait-item"><span>Jetpack</span><span class="trait-count">(115)</span></div>
+                  <div class="trait-item"><span>Grapple Gun</span><span class="trait-count">(115)</span></div>
+                  <div class="trait-item"><span>Wheat</span><span class="trait-count">(107)</span></div>
+                  <div class="trait-item"><span>Launcher</span><span class="trait-count">(106)</span></div>
+                  <div class="trait-item"><span>Gas Tank</span><span class="trait-count">(105)</span></div>
+                  <div class="trait-item"><span>Drill</span><span class="trait-count">(65)</span></div>
+                  <div class="trait-item"><span>Katana</span><span class="trait-count">(61)</span></div>
+                  <div class="trait-item"><span>Pan</span><span class="trait-count">(60)</span></div>
+                  <div class="trait-item"><span>Plasma Rifle</span><span class="trait-count">(58)</span></div>
+                  <div class="trait-item"><span>Green Vial</span><span class="trait-count">(55)</span></div>
+                  <div class="trait-item"><span>AK-47</span><span class="trait-count">(55)</span></div>
+                  <div class="trait-item"><span>Raygun</span><span class="trait-count">(32)</span></div>
+                  <div class="trait-item"><span>Drone</span><span class="trait-count">(32)</span></div>
+                  <div class="trait-item"><span>Cape</span><span class="trait-count">(26)</span></div>
+                  <div class="trait-item"><span>Unknown Vial</span><span class="trait-count">(24)</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="card trait-card" onclick="toggleTrait(this)">
+              <div class="trait-card-header">
+                <div>
+                  <div class="card-label">Body</div>
+                  <h3 class="card-title">7 Variations</h3>
+                </div>
+                <div class="trait-expand-icon">▼</div>
+              </div>
+              <div class="card-body">
+                <p style="margin-bottom: 8px;">Click to expand and see all 7 traits</p>
+                <div class="trait-details">
+                  <div class="trait-item"><span>Grey</span><span class="trait-count">(740)</span></div>
+                  <div class="trait-item"><span>Dark Grey</span><span class="trait-count">(740)</span></div>
+                  <div class="trait-item"><span>Light Brown</span><span class="trait-count">(735)</span></div>
+                  <div class="trait-item"><span>Brown</span><span class="trait-count">(716)</span></div>
+                  <div class="trait-item"><span>White</span><span class="trait-count">(710)</span></div>
+                  <div class="trait-item"><span>Dark Brown</span><span class="trait-count">(708)</span></div>
+                  <div class="trait-item"><span>Golden</span><span class="trait-count">(95)</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="card trait-card" onclick="toggleTrait(this)">
+              <div class="trait-card-header">
+                <div>
+                  <div class="card-label">Pants</div>
+                  <h3 class="card-title">25 Variations</h3>
+                </div>
+                <div class="trait-expand-icon">▼</div>
+              </div>
+              <div class="card-body">
+                <p style="margin-bottom: 8px;">Click to expand and see all 25 traits</p>
+                <div class="trait-details">
+                  <div class="trait-item"><span>Camo</span><span class="trait-count">(290)</span></div>
+                  <div class="trait-item"><span>Belt</span><span class="trait-count">(280)</span></div>
+                  <div class="trait-item"><span>Fur</span><span class="trait-count">(278)</span></div>
+                  <div class="trait-item"><span>Scrolls</span><span class="trait-count">(268)</span></div>
+                  <div class="trait-item"><span>Potions</span><span class="trait-count">(265)</span></div>
+                  <div class="trait-item"><span>Stripe</span><span class="trait-count">(251)</span></div>
+                  <div class="trait-item"><span>Cargo</span><span class="trait-count">(244)</span></div>
+                  <div class="trait-item"><span>Jeans</span><span class="trait-count">(243)</span></div>
+                  <div class="trait-item"><span>Astro</span><span class="trait-count">(232)</span></div>
+                  <div class="trait-item"><span>Shorts</span><span class="trait-count">(224)</span></div>
+                  <div class="trait-item"><span>Blue Vein</span><span class="trait-count">(135)</span></div>
+                  <div class="trait-item"><span>Scientist Apron</span><span class="trait-count">(129)</span></div>
+                  <div class="trait-item"><span>Police</span><span class="trait-count">(129)</span></div>
+                  <div class="trait-item"><span>Cowboy</span><span class="trait-count">(127)</span></div>
+                  <div class="trait-item"><span>Samurai</span><span class="trait-count">(122)</span></div>
+                  <div class="trait-item"><span>Mayan</span><span class="trait-count">(120)</span></div>
+                  <div class="trait-item"><span>Overalls</span><span class="trait-count">(115)</span></div>
+                  <div class="trait-item"><span>Jester</span><span class="trait-count">(109)</span></div>
+                  <div class="trait-item"><span>Gladiator</span><span class="trait-count">(86)</span></div>
+                  <div class="trait-item"><span>Rainbow</span><span class="trait-count">(82)</span></div>
+                  <div class="trait-item"><span>Ninja</span><span class="trait-count">(75)</span></div>
+                  <div class="trait-item"><span>Roman</span><span class="trait-count">(71)</span></div>
+                  <div class="trait-item"><span>Hakama</span><span class="trait-count">(70)</span></div>
+                  <div class="trait-item"><span>Cyberpunk</span><span class="trait-count">(19)</span></div>
+                  <div class="trait-item"><span>Ice</span><span class="trait-count">(18)</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="card trait-card" onclick="toggleTrait(this)">
+              <div class="trait-card-header">
+                <div>
+                  <div class="card-label">Neck</div>
+                  <h3 class="card-title">23 Variations</h3>
+                </div>
+                <div class="trait-expand-icon">▼</div>
+              </div>
+              <div class="card-body">
+                <p style="margin-bottom: 8px;">Click to expand and see all 23 traits</p>
+                <div class="trait-details">
+                  <div class="trait-item"><span>Bowtie</span><span class="trait-count">(305)</span></div>
+                  <div class="trait-item"><span>Red Tie</span><span class="trait-count">(274)</span></div>
+                  <div class="trait-item"><span>Pink Tie</span><span class="trait-count">(269)</span></div>
+                  <div class="trait-item"><span>Green Tie</span><span class="trait-count">(267)</span></div>
+                  <div class="trait-item"><span>Purple Tie</span><span class="trait-count">(262)</span></div>
+                  <div class="trait-item"><span>Pink Bandana</span><span class="trait-count">(261)</span></div>
+                  <div class="trait-item"><span>Blue Bandana</span><span class="trait-count">(258)</span></div>
+                  <div class="trait-item"><span>Blue Tie</span><span class="trait-count">(254)</span></div>
+                  <div class="trait-item"><span>Red Bandana</span><span class="trait-count">(254)</span></div>
+                  <div class="trait-item"><span>Green Bandana</span><span class="trait-count">(253)</span></div>
+                  <div class="trait-item"><span>Purple Bandana</span><span class="trait-count">(250)</span></div>
+                  <div class="trait-item"><span>Lightning Bandana</span><span class="trait-count">(242)</span></div>
+                  <div class="trait-item"><span>Gold Pendant</span><span class="trait-count">(108)</span></div>
+                  <div class="trait-item"><span>Dog Tag</span><span class="trait-count">(106)</span></div>
+                  <div class="trait-item"><span>Ruby Pendant</span><span class="trait-count">(102)</span></div>
+                  <div class="trait-item"><span>Silver Collar</span><span class="trait-count">(96)</span></div>
+                  <div class="trait-item"><span>Spike Collar</span><span class="trait-count">(91)</span></div>
+                  <div class="trait-item"><span>Glowstick</span><span class="trait-count">(87)</span></div>
+                  <div class="trait-item"><span>Silver Chain</span><span class="trait-count">(84)</span></div>
+                  <div class="trait-item"><span>Emerald</span><span class="trait-count">(54)</span></div>
+                  <div class="trait-item"><span>Cyber Collar</span><span class="trait-count">(53)</span></div>
+                  <div class="trait-item"><span>Gold Collar</span><span class="trait-count">(44)</span></div>
+                  <div class="trait-item"><span>Gold Chain</span><span class="trait-count">(18)</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="card trait-card" onclick="toggleTrait(this)">
+              <div class="trait-card-header">
+                <div>
+                  <div class="card-label">Head</div>
+                  <h3 class="card-title">29 Variations</h3>
+                </div>
+                <div class="trait-expand-icon">▼</div>
+              </div>
+              <div class="card-body">
+                <p style="margin-bottom: 8px;">Click to expand and see all 29 traits</p>
+                <div class="trait-details">
+                  <div class="trait-item"><span>Red Fedora</span><span class="trait-count">(236)</span></div>
+                  <div class="trait-item"><span>Beanie</span><span class="trait-count">(234)</span></div>
+                  <div class="trait-item"><span>Fedora</span><span class="trait-count">(225)</span></div>
+                  <div class="trait-item"><span>Grey Fedora</span><span class="trait-count">(222)</span></div>
+                  <div class="trait-item"><span>Fisher</span><span class="trait-count">(212)</span></div>
+                  <div class="trait-item"><span>Burette</span><span class="trait-count">(207)</span></div>
+                  <div class="trait-item"><span>Leprechaun</span><span class="trait-count">(205)</span></div>
+                  <div class="trait-item"><span>Formal</span><span class="trait-count">(200)</span></div>
+                  <div class="trait-item"><span>Detective</span><span class="trait-count">(197)</span></div>
+                  <div class="trait-item"><span>Snapback</span><span class="trait-count">(194)</span></div>
+                  <div class="trait-item"><span>Red Cap</span><span class="trait-count">(190)</span></div>
+                  <div class="trait-item"><span>Flame</span><span class="trait-count">(177)</span></div>
+                  <div class="trait-item"><span>Paper</span><span class="trait-count">(139)</span></div>
+                  <div class="trait-item"><span>Robin</span><span class="trait-count">(133)</span></div>
+                  <div class="trait-item"><span>Jester</span><span class="trait-count">(124)</span></div>
+                  <div class="trait-item"><span>Gladiator</span><span class="trait-count">(122)</span></div>
+                  <div class="trait-item"><span>Mayan</span><span class="trait-count">(119)</span></div>
+                  <div class="trait-item"><span>Pilot</span><span class="trait-count">(114)</span></div>
+                  <div class="trait-item"><span>Mining</span><span class="trait-count">(110)</span></div>
+                  <div class="trait-item"><span>Propeller</span><span class="trait-count">(110)</span></div>
+                  <div class="trait-item"><span>Scientist</span><span class="trait-count">(106)</span></div>
+                  <div class="trait-item"><span>Alien</span><span class="trait-count">(76)</span></div>
+                  <div class="trait-item"><span>Gold Tablet</span><span class="trait-count">(71)</span></div>
+                  <div class="trait-item"><span>Axolotl</span><span class="trait-count">(62)</span></div>
+                  <div class="trait-item"><span>Frog</span><span class="trait-count">(55)</span></div>
+                  <div class="trait-item"><span>Antenna</span><span class="trait-count">(54)</span></div>
+                  <div class="trait-item"><span>Jungle</span><span class="trait-count">(46)</span></div>
+                  <div class="trait-item"><span>Crown</span><span class="trait-count">(33)</span></div>
+                  <div class="trait-item"><span>Lion</span><span class="trait-count">(28)</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="card trait-card" onclick="toggleTrait(this)">
+              <div class="trait-card-header">
+                <div>
+                  <div class="card-label">Mouth</div>
+                  <h3 class="card-title">25 Variations</h3>
+                </div>
+                <div class="trait-expand-icon">▼</div>
+              </div>
+              <div class="card-body">
+                <p style="margin-bottom: 8px;">Click to expand and see all 25 traits</p>
+                <div class="trait-details">
+                  <div class="trait-item"><span>Stick</span><span class="trait-count">(264)</span></div>
+                  <div class="trait-item"><span>Ball</span><span class="trait-count">(255)</span></div>
+                  <div class="trait-item"><span>Cigar</span><span class="trait-count">(252)</span></div>
+                  <div class="trait-item"><span>Corn</span><span class="trait-count">(247)</span></div>
+                  <div class="trait-item"><span>Moustache</span><span class="trait-count">(243)</span></div>
+                  <div class="trait-item"><span>Tennis Ball</span><span class="trait-count">(238)</span></div>
+                  <div class="trait-item"><span>Lollipop</span><span class="trait-count">(236)</span></div>
+                  <div class="trait-item"><span>Party Horn</span><span class="trait-count">(229)</span></div>
+                  <div class="trait-item"><span>Pipe</span><span class="trait-count">(223)</span></div>
+                  <div class="trait-item"><span>Joint</span><span class="trait-count">(215)</span></div>
+                  <div class="trait-item"><span>Tongue</span><span class="trait-count">(160)</span></div>
+                  <div class="trait-item"><span>Scientist</span><span class="trait-count">(154)</span></div>
+                  <div class="trait-item"><span>Pencil</span><span class="trait-count">(148)</span></div>
+                  <div class="trait-item"><span>Pizza Slice</span><span class="trait-count">(146)</span></div>
+                  <div class="trait-item"><span>Bubble Gum</span><span class="trait-count">(144)</span></div>
+                  <div class="trait-item"><span>Fish</span><span class="trait-count">(142)</span></div>
+                  <div class="trait-item"><span>Streak</span><span class="trait-count">(140)</span></div>
+                  <div class="trait-item"><span>Wheat</span><span class="trait-count">(129)</span></div>
+                  <div class="trait-item"><span>Mouse</span><span class="trait-count">(79)</span></div>
+                  <div class="trait-item"><span>Bone</span><span class="trait-count">(78)</span></div>
+                  <div class="trait-item"><span>Knife</span><span class="trait-count">(78)</span></div>
+                  <div class="trait-item"><span>Dog Tag</span><span class="trait-count">(72)</span></div>
+                  <div class="trait-item"><span>Gas Mask</span><span class="trait-count">(71)</span></div>
+                  <div class="trait-item"><span>Alien</span><span class="trait-count">(31)</span></div>
+                  <div class="trait-item"><span>Teddy</span><span class="trait-count">(26)</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="card trait-card" onclick="toggleTrait(this)">
+              <div class="trait-card-header">
+                <div>
+                  <div class="card-label">Eyes</div>
+                  <h3 class="card-title">23 Variations</h3>
+                </div>
+                <div class="trait-expand-icon">▼</div>
+              </div>
+              <div class="card-body">
+                <p style="margin-bottom: 8px;">Click to expand and see all 23 traits</p>
+                <div class="trait-details">
+                  <div class="trait-item"><span>3D Glasses</span><span class="trait-count">(311)</span></div>
+                  <div class="trait-item"><span>Ski Goggles</span><span class="trait-count">(308)</span></div>
+                  <div class="trait-item"><span>Dark Glasses</span><span class="trait-count">(285)</span></div>
+                  <div class="trait-item"><span>Goggles</span><span class="trait-count">(283)</span></div>
+                  <div class="trait-item"><span>Green Glasses</span><span class="trait-count">(278)</span></div>
+                  <div class="trait-item"><span>Spectacles</span><span class="trait-count">(277)</span></div>
+                  <div class="trait-item"><span>Purple Glasses</span><span class="trait-count">(268)</span></div>
+                  <div class="trait-item"><span>Bifocal Glasses</span><span class="trait-count">(267)</span></div>
+                  <div class="trait-item"><span>Pink Glasses</span><span class="trait-count">(261)</span></div>
+                  <div class="trait-item"><span>Mask</span><span class="trait-count">(249)</span></div>
+                  <div class="trait-item"><span>Scientist Glasses</span><span class="trait-count">(151)</span></div>
+                  <div class="trait-item"><span>Mayan Mask</span><span class="trait-count">(133)</span></div>
+                  <div class="trait-item"><span>Alien Eyes</span><span class="trait-count">(127)</span></div>
+                  <div class="trait-item"><span>Nerd Glasses</span><span class="trait-count">(126)</span></div>
+                  <div class="trait-item"><span>Eye Patch</span><span class="trait-count">(123)</span></div>
+                  <div class="trait-item"><span>Blindfold</span><span class="trait-count">(123)</span></div>
+                  <div class="trait-item"><span>Pixel Glasses</span><span class="trait-count">(122)</span></div>
+                  <div class="trait-item"><span>Rainbow Glasses</span><span class="trait-count">(62)</span></div>
+                  <div class="trait-item"><span>Alien Glasses</span><span class="trait-count">(61)</span></div>
+                  <div class="trait-item"><span>Laser Goggles</span><span class="trait-count">(57)</span></div>
+                  <div class="trait-item"><span>Night Vision</span><span class="trait-count">(52)</span></div>
+                  <div class="trait-item"><span>Gold Glasses</span><span class="trait-count">(25)</span></div>
+                  <div class="trait-item"><span>Cyber</span><span class="trait-count">(16)</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="highlight-card" style="margin-top: 20px;">
+            <div class="highlight-inner" style="grid-template-columns: 1fr;">
+              <div class="highlight-copy">
+                <div class="chip-inline">
+                  <span>186</span> Randomized Traits
+                </div>
+                <p>
+                  Every Nomad Dog is assembled from this trait pool using fully randomized generation. Each mint produces a unique combination of traits across all 8 categories — your NFT is determined at mint time.
+                </p>
+                <p>
+                  Some traits are common, others are rare. Thematic combinations like Scientist, Mayan, Samurai, Gladiator, and Cyberpunk sets naturally emerge through random generation, creating endless collectible possibilities.
+                </p>
+                <div class="highlight-badges">
+                  <div class="badge-soft">
+                    Total Traits: <span>186</span>
+                  </div>
+                  <div class="badge-soft">
+                    Categories: <span>8</span>
+                  </div>
+                  <div class="badge-soft">
+                    Rarity: <span>Natural distribution</span>
+                  </div>
+                  <div class="badge-soft">
+                    Generation: <span>Randomized on mint</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- STAKING -->
+      <section id="staking">
+      <section style="background: linear-gradient(135deg, rgba(77, 242, 194, 0.05), rgba(70, 169, 255, 0.05)); padding: 60px 0;">
+        <div class="inner">
+          <div class="section-header">
+            <div>
+              <div class="section-tag" style="color: var(--accent);">Staking</div>
+              <h2 class="section-title">Non-Custodial NFT Staking</h2>
+            </div>
+            <div class="section-subtitle">
+              Nomad Dogs are available for staking on a fully non-custodial NFT platform developed by NifftySwiggle for Gaia Ecosystem — the creator behind this collection. Stake your Nomads, earn rewards, and keep full control of your assets.
+            </div>
+          </div>
+
+          <div class="card-row">
+            <article class="card" style="border: 1px solid rgba(77, 242, 194, 0.3);">
+              <h3 class="card-title">Stake Your Nomads</h3>
+              <div class="card-body">
+                <p>
+                  The <strong>Non-Custodial Staking Platform</strong> is a comprehensive built by NifftySwiggle for Gaia Ecosystem. Your NFTs never leave your wallet — you maintain full ownership while earning staking rewards.
+                </p>
+                <ul class="card-list">
+                  <li><strong>Non-Custodial:</strong> Your NFTs stay in your wallet at all times</li>
+                  <li><strong>Creator-Built:</strong> Developed by NifftySwiggle himself</li>
+                  <li><strong>Reward System:</strong> Earn passive rewards just for holding</li>
+                  <li><strong>Full Control:</strong> Unstake anytime, no lock periods</li>
+                </ul>
+                <a href="https://www.gaiaecosystem.com/stake.html" target="_blank" rel="noopener noreferrer" class="btn" style="margin-top: 20px; display: inline-flex; align-items: center; gap: 8px;">
+                  <span>Stake on Gaia Ecosystem</span>
+                  <span style="font-size: 18px;">→</span>
+                </a>
+              </div>
+            </article>
+
+            <aside class="card card-outline">
+              <div class="card-label">NifftySwiggle's Toolkit</div>
+              <h3 class="card-title">Builder-Owned Infrastructure</h3>
+              <div class="card-body">
+                <p>
+                  Unlike most NFT projects that rely on third-party platforms, Nomad Dogs benefit from infrastructure built directly by the creator. The Gaia staking platform is just one tool in NifftySwiggle's growing ecosystem.
+                </p>
+                <p style="margin-top: 10px;">
+                  This means tighter integration, faster updates, and a long-term commitment to supporting holders with real utility — not promises.
+                </p>
+                <div style="margin-top: 16px; padding: 12px; background: rgba(77, 242, 194, 0.1); border-radius: 8px; border: 1px solid rgba(77, 242, 194, 0.2);">
+                  <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--accent); margin-bottom: 6px;">
+                    <span style="font-size: 16px;">🔧</span>
+                    <strong>Developer Advantage</strong>
+                  </div>
+                  <p style="font-size: 11px; color: var(--text-muted); margin: 0;">
+                    When the creator controls the infrastructure, holders get direct access to tools, faster problem-solving, and custom features designed specifically for this community.
+                  </p>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- ROADMAP -->
+      <section id="roadmap">
+        <div class="inner">
+          <div class="section-header">
+            <div>
+              <div class="section-tag">Path</div>
+              <h2 class="section-title">Development Roadmap</h2>
+            </div>
+            <div class="section-subtitle">
+              A straightforward path focused on delivering value: minting on Monad, launching holder benefits, and building sustainable Web3 tools.
+            </div>
+          </div>
+
+          <div class="roadmap-row">
+            <div class="timeline">
+              <div class="timeline-item active">
+                <div class="timeline-dot"></div>
+                <div class="timeline-label">Phase one</div>
+                <div class="timeline-title">Launch & mint</div>
+                <div class="timeline-body">
+                  Deploy the contract on Monad, open the public mint, and seed the initial convoy of Nomads.
+                </div>
+              </div>
+              <div class="timeline-item active">
+                <div class="timeline-dot"></div>
+                <div class="timeline-label">Phase two</div>
+                <div class="timeline-title">Non-Custoial Staking</div>
+                <div class="timeline-body">
+                  Hook Nomads into Gaia Ecosystem non custodial staking platform.
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-label">Phase three</div>
+                <div class="timeline-title">Reveal & Community Growth</div>
+                <div class="timeline-body">
+                  Full trait reveal of all Nomad Dogs with rarity rankings and trait analytics.
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-label">Phase four</div>
+                <div class="timeline-title">New utilities & ecosystem expansion</div>
+                <div class="timeline-body">
+                  Continue building experimental tools, dashboards, and utilities that feed back into the community. Support the growth of Web3 infrastructure and open-source development.
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-label">Phase five</div>
+                <div class="timeline-title">Ongoing Development & Future Innovation</div>
+                <div class="timeline-body">
+                  Continuous evolution with community-driven features, cross-chain integrations, advanced staking mechanics, collaboration with other Monad projects, and experimental Web3 utilities. This isn't an endpoint — it's a commitment to keep building, improving, and supporting the ecosystem long-term.
+                </div>
+              </div>
+            </div>
+
+            <aside class="card card-outline">
+              <div class="card-label">Philosophy</div>
+              <h3 class="card-title">Build soft, ship sharp</h3>
+              <div class="card-body">
+                <p>
+                  The goal isn’t to promise the world — it’s to deliver consistently, without abusing attention. Nomads
+                  are built as a composable base, not a one‑shot.
+                </p>
+                <p style="margin-top: 8px;">
+                  Real utility comes from consistent execution, not empty promises. Every tool, every feature, and every update is designed to add genuine value to holders and strengthen the broader Web3 community.
+                </p>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- CREATOR -->
+      <section id="creator" style="background: linear-gradient(135deg, rgba(77, 242, 194, 0.05), rgba(70, 169, 255, 0.05)); padding: 60px 0;">
+        <div class="inner">
+          <div class="section-header">
+            <div>
+              <div class="section-tag" style="color: #4df2c2;">The Creator</div>
+              <h2 class="section-title">Built by NifftySwiggle</h2>
+            </div>
+            <div class="section-subtitle">
+              An independent Web3 developer building tools, collections, and infrastructure that actually serve the community.
+            </div>
+          </div>
+
+          <div class="card-row">
+            <article class="card" style="border: 1px solid rgba(77, 242, 194, 0.3);">
+              <div class="card-label" style="color: #4df2c2;">About the Builder</div>
+              <h3 class="card-title">NifftySwiggle: Developer & Creator</h3>
+              <div class="card-body">
+                <p>
+                  <strong>NifftySwiggle</strong> is an independent Web3 developer with a passion for building real utility in the NFT space. From smart contracts to full-stack applications, every tool is designed to solve actual problems for creators and collectors.
+                </p>
+                <p>
+                  Nomad Dogs isn't just an art collection — it's backed by a builder who develops the infrastructure to support it. Non-custodial staking, custom dashboards, on-chain tools, and community utilities are all part of the vision.
+                </p>
+                <ul class="card-list">
+                  <li><strong>Full-Stack Developer:</strong> Smart contracts, web apps, and blockchain tools</li>
+                  <li><strong>Community-First:</strong> Building for real people, not just speculation</li>
+                  <li><strong>Long-Term Vision:</strong> Sustainable projects over quick flips</li>
+                  <li><strong>Open Source Mindset:</strong> Sharing tools and helping other projects succeed</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="card" style="border: 1px solid rgba(70, 169, 255, 0.3);">
+              <div class="card-label" style="color: #46a9ff;">Tools & Development</div>
+              <h3 class="card-title">Building for the Ecosystem</h3>
+              <div class="card-body">
+                <p>
+                  NifftySwiggle's toolkit extends far beyond Nomad Dogs. The Gaia Ecosystem, custom NFT utilities, batch reward systems, Web3 dashboards, and even a fully-functional chess game are all actively maintained and continuously improved.
+                </p>
+                <p>
+                  This isn't about launching a project and disappearing. It's about building infrastructure that supports multiple collections, helps other creators, and provides lasting value to the Web3 community.
+                </p>
+                <ul class="card-list">
+                  <li><strong>Gaia Ecosystem:</strong> Non-custodial staking platform for NFTs</li>
+                  <li><strong>Strategic Play:</strong> On-chain chess game with Web3 integration</li>
+                  <li><strong>Web3 Tools:</strong> Batch transfers, reward distributions, analytics</li>
+                  <li><strong>Smart Contracts:</strong> Custom deployments for multiple chains</li>
+                  <li><strong>Community Support:</strong> Helping other projects with technical guidance</li>
+                </ul>
+                <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+                  <a href="https://nifftyswiggle.pw" target="_blank" rel="noopener noreferrer" class="btn" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <span>NifftySwiggle.pw</span>
+                    <span style="font-size: 18px;">→</span>
+                  </a>
+                  <a href="https://strategicplay.xyz" target="_blank" rel="noopener noreferrer" class="btn" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <span>StrategicPlay.xyz</span>
+                    <span style="font-size: 18px;">♟️</span>
+                  </a>
+                  <a href="https://x.com/pet_rescueNFT" target="_blank" rel="noopener noreferrer" class="btn" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <span>Follow on X</span>
+                    <span style="font-size: 18px;">𝕏</span>
+                  </a>
+                </div>
+                <div style="margin-top: 16px; padding: 12px; background: rgba(70, 169, 255, 0.1); border-radius: 8px; border: 1px solid rgba(70, 169, 255, 0.2);">
+                  <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: #46a9ff; margin-bottom: 6px;">
+                    <span style="font-size: 16px;">💙</span>
+                    <strong>Passion for Building Good</strong>
+                  </div>
+                  <p style="font-size: 11px; color: var(--text-muted); margin: 0;">
+                    Every project NifftySwiggle launches comes with the commitment to continue building, improving, and supporting — not just for this collection, but for the entire Web3 space. The goal is to create tools that outlast trends and genuinely help people.
+                  </p>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="highlight-card" style="margin-top: 24px; border: 1px solid rgba(138, 43, 226, 0.3);">
+            <div class="highlight-inner" style="grid-template-columns: 1fr;">
+              <div class="highlight-copy">
+                <div class="chip-inline" style="background: rgba(138, 43, 226, 0.15); border-color: rgba(138, 43, 226, 0.3);">
+                  <span>Philosophy</span>
+                </div>
+                <h3 style="font-size: 18px; margin-top: 8px; margin-bottom: 12px;">Build for Good, Build for Real</h3>
+                <p>
+                  The Web3 space is full of projects that promise the world and deliver nothing. NifftySwiggle takes the opposite approach: under-promise, over-deliver, and keep building even when no one's watching.
+                </p>
+                <p>
+                  Whether it's helping other projects debug their contracts, open-sourcing useful tools, or just being available to answer questions in Discord — the mission is to lift the entire community, not just one collection.
+                </p>
+                <p style="margin-top: 12px; font-style: italic; color: var(--text-muted);">
+                  "I don't build for hype. I build because I love solving problems and creating tools that actually work. If you support Nomad Dogs, you're supporting a developer who will keep building long after the mint is over."
+                  <span style="display: block; margin-top: 4px; font-size: 11px;">— NifftySwiggle</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq">
+        <div class="inner">
+          <div class="section-header">
+            <div>
+              <div class="section-tag">FAQ</div>
+              <h2 class="section-title">Questions from the convoy</h2>
+            </div>
+            <div class="section-subtitle">
+              Short answers, no fluff. If you need deeper docs, we’ll link them once mint is live and contracts are
+              deployed.
+            </div>
+          </div>
+
+                    <div class="faq-grid">
+            <div>
+              <div class="faq-item">
+                <div class="faq-q">How do I get a Rare trait?</div>
+                <div class="faq-a">
+                  Rare traits live inside the main Nomads collection. You mint like everyone else — if RNG smiles,
+                  your Nomad reveals with rare traits.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="faq-q">Is there a whitelist or presale?</div>
+                <div class="faq-a">
+                  No. Mint is public by design. Early allies are rewarded through airdrops, reserved supply, and future
+                  experiments instead of private pricing games.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="faq-q">Where can I see secondary listings?</div>
+                <div class="faq-a">
+                  View Nomad Dogs on <a href="https://magiceden.io/collections/monad/0xbD11e8799E1D48fe607B6a471C66de84522e49c1" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none;">Magic Eden</a> or <a href="https://opensea.io/collection/nomads-201731784" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none;">OpenSea</a>. Always verify the contract address (0xbD11...49c1) matches before buying.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="faq-q">How does staking work?</div>
+                <div class="faq-a">
+                  Staking is non-custodial through the Gaia Ecosystem platform. You keep full ownership of your NFTs while earning rewards. No locking contracts — you can unstake anytime.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="faq-q">What's the connection to Pitbits?</div>
+                <div class="faq-a">
+                  Pitbits is the original collection on Cronos. Nomad Dogs evolved from that universe onto Monad. Both collections coexist — neither replaces the other. Pitbits holders get reserved Nomads.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="faq-q">When will NFTs be revealed?</div>
+                <div class="faq-a">
+                  NFTs reveal after sellout or if market conditions change.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="faq-q">What wallet do I need?</div>
+                <div class="faq-a">
+                  Any Monad-compatible wallet works. MetaMask, Rabby, or similar. Make sure to add Monad network (Chain ID 143) and have $MON for minting and gas fees.
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="faq-item">
+                <div class="faq-q">What's the vision after mint?</div>
+                <div class="faq-a">
+                  Use Nomads as a modular base to explore the Monad ecosystem: staking, collaborations, visual
+                  upgrades, and trait‑driven experiments.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="faq-q">How do I stay updated?</div>
+                <div class="faq-a">
+                  Follow our official X account and join the Discord. Mint progress, and future
+                  drops will be announced from there.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="faq-q">Can I mint multiple Nomads?</div>
+                <div class="faq-a">
+                  Yes, up to 20 per wallet. Batch minting is supported to save on gas fees if you want multiple Nomads in one transaction.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="faq-q">Will there be future utility?</div>
+                <div class="faq-a">
+                  Absolutely. Beyond staking rewards, holders get access to future airdrops, exclusive tools on nifftyswiggle.pw, and early access to upcoming projects in the Monad ecosystem.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="faq-q">What are the 999 reserved NFTs for?</div>
+                <div class="faq-a">
+                  Reserved supply goes to Pitbits holders (who supported the original collection), team allocations, marketing partnerships, and future community rewards. these unlock gradually.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="faq-q">Is the smart contract audited?</div>
+                <div class="faq-a">
+                  The contract is built on NFTs2Me's audited ERC721A standard, which is battle-tested across multiple chains. It's optimized for gas efficiency and security.
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-links">
+          <div style="margin-bottom: 12px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Navigation</div>
+          <a href="#top">Home</a>
+          <a href="#about">About</a>
+          <a href="#mint">Mint</a>
+          <a href="#traits">Traits</a>
+          <a href="#pitbits">Origin Story</a>
+          <a href="#staking">Staking</a>
+          <a href="#roadmap">Roadmap</a>
+          <a href="#creator">Creator</a>
+          <a href="#faq">FAQ</a>
+        </div>
+
+        <div class="footer-links">
+          <div style="margin-bottom: 12px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Marketplaces</div>
+          <a href="https://magiceden.io/collections/monad/0xbD11e8799E1D48fe607B6a471C66de84522e49c1" target="_blank" rel="noopener noreferrer">Magic Eden</a>
+          <a href="https://opensea.io/collection/nomads-201731784" target="_blank" rel="noopener noreferrer">OpenSea</a>
+          <a href="https://monadscan.com/address/0xbD11e8799E1D48fe607B6a471C66de84522e49c1" target="_blank" rel="noopener noreferrer">Monadscan Explorer</a>
+        </div>
+
+        <div class="footer-links">
+          <div style="margin-bottom: 12px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Ecosystem</div>
+          <a href="https://www.gaiaecosystem.com/stake.html" target="_blank" rel="noopener noreferrer">Gaia Staking</a>
+          <a href="https://allstake.io/launches/pitbits" target="_blank" rel="noopener noreferrer">Pitbits (Cronos)</a>
+          <a href="https://nifftyswiggle.pw" target="_blank" rel="noopener noreferrer">NifftySwiggle.pw</a>
+          <a href="https://strategicplay.xyz" target="_blank" rel="noopener noreferrer">Strategic Play</a>
+        </div>
+
+        <div class="footer-links">
+          <div style="margin-bottom: 12px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Connect</div>
+          <a href="https://x.com/pet_rescueNFT" target="_blank" rel="noopener noreferrer">X / Twitter</a>
+          <a href="https://discord.gg/nomaddogs" target="_blank" rel="noopener noreferrer">Discord</a>
+          <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 10px; color: var(--text-muted);">
+            © 2025 NifftySwiggle<br>
+            All Rights Reserved
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // ============================================
+    // CONTRACT CONFIGURATION
+    // ============================================
+    const CONTRACT_ADDRESS = "0xbd11e8799e1d48fe607b6a471c66de84522e49c1";
+    const CHAIN_ID = 143; // Monad network
+    
+    // NFTs2Me Contract ABI - Correct function names
+    const CONTRACT_ABI = [
+      // Minting
+      "function mint(uint256 amount) payable",
+      "function mintingType() view returns (uint8)",
+      
+      // Supply & Price (trying different possible names)
+      "function totalSupply() view returns (uint256)",
+      "function getPrice() view returns (uint256)",
+      "function maxTotalSupply() view returns (uint256)",
+      "function maxPerAddress() view returns (uint256)",
+      "function maxPerMint() view returns (uint256)",
+      
+      // Standard ERC721
+      "function balanceOf(address owner) view returns (uint256)",
+      "function ownerOf(uint256 tokenId) view returns (address)",
+      "function tokenURI(uint256 tokenId) view returns (string)",
+      "function name() view returns (string)",
+      "function symbol() view returns (string)",
+      
+      // Ownership & Admin
+      "function owner() view returns (address)",
+      
+      // Burning
+      "function burn(uint256 tokenId) payable",
+      
+      // Events
+      "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)"
+    ];
+
+    // Monad RPC - UPDATE THIS WITH ACTUAL MONAD RPC
+    const NETWORK_CONFIG = {
+      chainId: `0x${CHAIN_ID.toString(16)}`,
+      chainName: "Monad",
+      nativeCurrency: {
+        name: "MON",
+        symbol: "MON",
+        decimals: 18
+      },
+      rpcUrls: ["https://rpc.monad.network"], // TODO: Update with actual Monad RPC
+      blockExplorerUrls: ["https://explorer.monad.network"] // TODO: Update with actual explorer
+    };
+
+    // Global state
+    let provider = null;
+    let signer = null;
+    let contract = null;
+    let userAddress = null;
+
+    // ============================================
+    // WEB3 FUNCTIONS
+    // ============================================
+
+    async function connectWallet() {
+      try {
+        if (typeof window.ethereum === 'undefined') {
+          alert('Please install MetaMask or another Web3 wallet!');
+          return false;
+        }
+
+        // Request account access
+        const accounts = await window.ethereum.request({ 
+          method: 'eth_requestAccounts' 
+        });
+        
+        userAddress = accounts[0];
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        signer = provider.getSigner();
+
+        // Check if we're on the right network
+        const network = await provider.getNetwork();
+        if (network.chainId !== CHAIN_ID) {
+          await switchNetwork();
+        }
+
+        // Initialize contract
+        contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+        // Update UI
+        updateWalletUI();
+        await refreshContractData();
+
+        return true;
+      } catch (error) {
+        console.error('Wallet connection error:', error);
+        alert('Failed to connect wallet: ' + error.message);
+        return false;
+      }
+    }
+
+    async function switchNetwork() {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: NETWORK_CONFIG.chainId }],
+        });
+      } catch (switchError) {
+        // Chain hasn't been added to MetaMask yet
+        if (switchError.code === 4902) {
+          try {
+            await window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [NETWORK_CONFIG],
+            });
+          } catch (addError) {
+            console.error('Error adding network:', addError);
+            throw addError;
+          }
+        } else {
+          throw switchError;
+        }
+      }
+    }
+
+    async function refreshContractData() {
+      if (!contract) return;
+
+      try {
+        // Read contract data
+        const totalSupply = await contract.totalSupply();
+        const maxSupply = await contract.maxTotalSupply();
+        const price = await contract.getPrice();
+        const maxPerWallet = await contract.maxPerAddress();
+
+        const supplyNum = totalSupply.toNumber();
+        const maxNum = maxSupply.toNumber();
+
+        // Update progress bar
+        updateProgressBar(supplyNum, maxNum);
+
+        // Update live mint counts in traits section
+        const liveMintCount = document.getElementById('liveMintCount');
+        const liveAvailable = document.getElementById('liveAvailable');
+        if (liveMintCount) liveMintCount.textContent = supplyNum;
+        if (liveAvailable) liveAvailable.textContent = maxNum - supplyNum;
+
+        // Update price display
+        const priceInMON = ethers.utils.formatEther(price);
+        console.log('Contract data:', {
+          totalSupply: supplyNum,
+          maxSupply: maxNum,
+          price: priceInMON + ' MON',
+          maxPerWallet: maxPerWallet.toNumber()
+        });
+
+        // Update price in UI if needed
+        document.querySelectorAll('.hero-kpi-value').forEach(el => {
+          if (el.parentElement.querySelector('.hero-kpi-label')?.textContent === 'Mint') {
+            el.innerHTML = `${priceInMON}&nbsp;$MON`;
+          }
+        });
+
+        return {
+          totalSupply: supplyNum,
+          maxSupply: maxNum,
+          price: priceInMON,
+          maxPerWallet: maxPerWallet.toNumber()
+        };
+      } catch (error) {
+        console.error('Error reading contract data:', error);
+      }
+    }
+
+    async function mintNFT(amount) {
+      if (!contract || !userAddress) {
+        alert('Please connect your wallet first!');
+        return false;
+      }
+
+      try {
+        // Check user's current balance
+        const currentBalance = await contract.balanceOf(userAddress);
+        const maxPerWallet = await contract.maxPerAddress();
+        
+        if (maxPerWallet.toNumber() > 0 && currentBalance.toNumber() + amount > maxPerWallet.toNumber()) {
+          alert(`You can only mint ${maxPerWallet.toNumber()} total. You already have ${currentBalance.toNumber()}.`);
+          return false;
+        }
+
+        // Get price from contract
+        const price = await contract.getPrice();
+        const totalPrice = price.mul(amount);
+
+        console.log('Minting:', {
+          amount,
+          pricePerNFT: ethers.utils.formatEther(price),
+          totalPrice: ethers.utils.formatEther(totalPrice)
+        });
+
+        // Call mint function
+        const tx = await contract.mint(amount, {
+          value: totalPrice
+        });
+
+        // Update button to show pending
+        const mintBtn = document.getElementById('mintButton');
+        const originalText = mintBtn.innerHTML;
+        mintBtn.innerHTML = '<span>Minting... (check wallet)</span>';
+        mintBtn.disabled = true;
+
+        // Wait for transaction
+        console.log('Transaction sent:', tx.hash);
+        const receipt = await tx.wait();
+
+        // Success!
+        alert(`Successfully minted ${amount} Nomad(s)!\n\nTransaction: ${receipt.transactionHash}`);
+        
+        // Refresh data
+        await refreshContractData();
+
+        mintBtn.innerHTML = originalText;
+        mintBtn.disabled = false;
+
+        return true;
+      } catch (error) {
+        console.error('Mint error:', error);
+        
+        let errorMsg = 'Mint failed';
+        if (error.code === 4001) {
+          errorMsg = 'Transaction rejected by user';
+        } else if (error.message) {
+          errorMsg = error.message;
+        }
+        
+        alert(errorMsg);
+        
+        const mintBtn = document.getElementById('mintButton');
+        mintBtn.disabled = false;
+        mintBtn.innerHTML = '<span>Mint Nomads</span>';
+        
+        return false;
+      }
+    }
+
+    function updateWalletUI() {
+      const mintBtn = document.getElementById('mintButton');
+      if (userAddress) {
+        // Show connected state - you can enhance this
+        console.log('Connected:', userAddress);
+      }
+    }
+
+    function updateProgressBar(current, total) {
+      const fill = document.getElementById("hero-progress-fill");
+      const label = document.getElementById("hero-progress-text");
+      if (!fill || !label) return;
+
+      const pct = (current / total) * 100;
+      fill.style.width = pct.toFixed(1) + "%";
+      label.textContent = current + " / " + total;
+    }
+
+    // Listen for account/network changes
+    if (typeof window.ethereum !== 'undefined') {
+      window.ethereum.on('accountsChanged', (accounts) => {
+        if (accounts.length === 0) {
+          userAddress = null;
+          contract = null;
+        } else {
+          userAddress = accounts[0];
+          connectWallet();
+        }
+      });
+
+      window.ethereum.on('chainChanged', () => {
+        window.location.reload();
+      });
+    }
+
+    // Smooth scroll helper
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    // Toggle trait card expansion
+    function toggleTrait(card) {
+      card.classList.toggle('expanded');
+    }
+
+    // Parallax effect
+    (function () {
+      const layers = document.querySelectorAll(".parallax-layer");
+      if (!layers.length) return;
+
+      window.addEventListener("scroll", () => {
+        const scrollY = window.scrollY || window.pageYOffset;
+        layers.forEach((layer) => {
+          const speed = parseFloat(layer.dataset.parallaxSpeed || "0.2");
+          const translateY = scrollY * speed * -1;
+          layer.style.transform = `translate3d(0, ${translateY}px, 0)`;
+        });
+      });
+    })();
+
+    // Fetch live MONAD price and update USD equivalents
+    (async function fetchMonadPrice() {
+      try {
+        // Fetch MONAD price from CoinGecko API
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=monad&vs_currencies=usd');
+        const data = await response.json();
+        
+        if (data && data.monad && data.monad.usd) {
+          const monadPriceUSD = data.monad.usd;
+          const mintPriceUSD = (50 * monadPriceUSD).toFixed(2);
+          const usdText = `(~$${mintPriceUSD} USD)`;
+          
+          // Update all USD price displays
+          const heroUsdPrice = document.getElementById('hero-usd-price');
+          const heroCardUsdChip = document.getElementById('hero-card-usd-chip');
+          const aboutUsdPrice = document.getElementById('about-usd-price');
+          const mintUsdPrice = document.getElementById('mint-usd-price');
+          
+          if (heroUsdPrice) heroUsdPrice.textContent = usdText;
+          if (heroCardUsdChip) heroCardUsdChip.textContent = usdText;
+          if (aboutUsdPrice) aboutUsdPrice.textContent = usdText;
+          if (mintUsdPrice) mintUsdPrice.textContent = usdText;
+          
+          // Also update the mint total calculator
+          window.monadPriceUSD = monadPriceUSD;
+        }
+      } catch (error) {
+        console.log('Could not fetch MONAD price:', error);
+        // Silently fail - prices will just not show USD equivalent
+      }
+    })();
+
+    // Mint counter logic (UI only – hook your contract call to mintButton)
+    (function () {
+      const PRICE = 50; // MON per Nomad
+      const min = 1;
+      const max = 20;
+
+      const amountEl = document.getElementById("mintAmount");
+      const totalEl = document.getElementById("mintTotal");
+      const incrementBtn = document.getElementById("increment");
+      const decrementBtn = document.getElementById("decrement");
+      const mintButton = document.getElementById("mintButton");
+
+      if (!amountEl || !totalEl || !incrementBtn || !decrementBtn || !mintButton) return;
+
+      function updateTotal() {
+        const amount = parseInt(amountEl.textContent || "1", 10);
+        const monTotal = PRICE * amount;
+        let totalText = monTotal + "&nbsp;$MON";
+        
+        // Add USD equivalent if available
+        if (window.monadPriceUSD) {
+          const usdTotal = (monTotal * window.monadPriceUSD).toFixed(2);
+          totalText += ` <span style="font-size: 13px; color: var(--text-muted);">(~$${usdTotal} USD)</span>`;
+        }
+        
+        totalEl.innerHTML = totalText;
+      }
+
+      incrementBtn.addEventListener("click", () => {
+        let amount = parseInt(amountEl.textContent || "1", 10);
+        if (amount < max) {
+          amount++;
+          amountEl.textContent = String(amount);
+          updateTotal();
+        }
+      });
+
+      decrementBtn.addEventListener("click", () => {
+        let amount = parseInt(amountEl.textContent || "1", 10);
+        if (amount > min) {
+          amount--;
+          amountEl.textContent = String(amount);
+          updateTotal();
+        }
+      });
+
+      mintButton.addEventListener("click", async () => {
+        const amount = parseInt(amountEl.textContent || "1", 10);
+        
+        // Connect wallet if not connected
+        if (!userAddress) {
+          const connected = await connectWallet();
+          if (!connected) return;
+        }
+        
+        // Execute mint
+        await mintNFT(amount);
+      });
+
+      updateTotal();
+    })();
+
+    // Auto-load contract data on page load (read-only, no wallet needed)
+    (function () {
+      // Try to read contract data without wallet connection
+      async function loadPublicData() {
+        // NOTE: Monad RPC endpoint not yet available - using live static data
+        // TODO: Uncomment below once proper Monad RPC URL is configured
+        
+        /*
+        try {
+          // Use a public provider to read contract data
+          const publicProvider = new ethers.providers.JsonRpcProvider(NETWORK_CONFIG.rpcUrls[0]);
+          const publicContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, publicProvider);
+          
+          const totalSupply = await publicContract.totalSupply();
+          const maxSupply = await publicContract.maxTotalSupply();
+          const price = await publicContract.getPrice();
+          
+          const supplyNum = totalSupply.toNumber();
+          const maxNum = maxSupply.toNumber();
+          
+          updateProgressBar(supplyNum, maxNum);
+          
+          // Update live mint counts in traits section
+          const liveMintCount = document.getElementById('liveMintCount');
+          const liveAvailable = document.getElementById('liveAvailable');
+          if (liveMintCount) liveMintCount.textContent = supplyNum;
+          if (liveAvailable) liveAvailable.textContent = maxNum - supplyNum;
+          
+          console.log('Loaded contract data:', {
+            totalSupply: supplyNum,
+            maxSupply: maxNum,
+            price: ethers.utils.formatEther(price) + ' MON'
+          });
+        } catch (error) {
+        */
+          // Using current live mint data until Monad RPC is available
+          console.log('Using live static data (RPC endpoint not configured)');
+          
+          const total = 4444;
+          const available = 3421; // Update this number as mints progress
+          const currentMinted = total - available;
+          
+          // Update progress bar
+          updateProgressBar(currentMinted, total);
+          
+          // Update live mint counts in traits section
+          const liveMintCount = document.getElementById('liveMintCount');
+          const liveAvailable = document.getElementById('liveAvailable');
+          if (liveMintCount) liveMintCount.textContent = currentMinted;
+          if (liveAvailable) liveAvailable.textContent = available;
+          
+          console.log('Displayed mint data:', {
+            minted: currentMinted,
+            total: total,
+            available: available,
+            percentMinted: ((currentMinted / total) * 100).toFixed(1) + '%'
+          });
+        // }
+      }
+
+      // Load data when page is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadPublicData);
+      } else {
+        loadPublicData();
+      }
+    })();
+  </script>
+</body>
+</html>
