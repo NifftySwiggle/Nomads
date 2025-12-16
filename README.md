@@ -1,1 +1,2 @@
 # Nomads
+www.nomadshq.xyz
