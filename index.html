@@ -1603,7 +1603,7 @@
             </div>
 
             <div class="hero-right">
-              <div class="hero-card parallax-layer parallax-fast" data-parallax-speed="0.5">
+              <div class="hero-card">
                 <div class="hero-card-header">
                   <div class="hero-chip-row">
                     <div class="hero-chip">Nomad Dogs</div>
@@ -3030,10 +3030,6 @@
     (function () {
       // Try to read contract data without wallet connection
       async function loadPublicData() {
-        // NOTE: Monad RPC endpoint not yet available - using live static data
-        // TODO: Uncomment below once proper Monad RPC URL is configured
-        
-        /*
         try {
           // Use a public provider to read contract data
           const publicProvider = new ethers.providers.JsonRpcProvider(NETWORK_CONFIG.rpcUrls[0]);
@@ -3060,30 +3056,22 @@
             price: ethers.utils.formatEther(price) + ' MON'
           });
         } catch (error) {
-        */
-          // Using current live mint data until Monad RPC is available
-          console.log('Using live static data (RPC endpoint not configured)');
+          console.error('Error loading contract data:', error);
           
+          // Fallback to static data if RPC fails
           const total = 4444;
-          const available = 3421; // Update this number as mints progress
+          const available = 3416;
           const currentMinted = total - available;
           
-          // Update progress bar
           updateProgressBar(currentMinted, total);
           
-          // Update live mint counts in traits section
           const liveMintCount = document.getElementById('liveMintCount');
           const liveAvailable = document.getElementById('liveAvailable');
           if (liveMintCount) liveMintCount.textContent = currentMinted;
           if (liveAvailable) liveAvailable.textContent = available;
           
-          console.log('Displayed mint data:', {
-            minted: currentMinted,
-            total: total,
-            available: available,
-            percentMinted: ((currentMinted / total) * 100).toFixed(1) + '%'
-          });
-        // }
+          console.log('Using fallback static data due to RPC error');
+        }
       }
 
       // Load data when page is ready
