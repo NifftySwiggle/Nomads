@@ -1789,6 +1789,159 @@
         display: flex;
       }
     }
+
+    /* Portal Effect */
+    .portal-btn {
+      margin-top: 24px;
+      position: relative;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #4df2c2, #46a9ff);
+      border: 2px solid rgba(77, 242, 194, 0.5);
+      color: #02040a;
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      border-radius: var(--radius-pill);
+      box-shadow: 0 0 30px rgba(77, 242, 194, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.2);
+      animation: portal-pulse 2s ease-in-out infinite;
+      transition: all 0.3s ease;
+    }
+
+    .portal-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 50px rgba(77, 242, 194, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.3);
+    }
+
+    @keyframes portal-pulse {
+      0%, 100% {
+        box-shadow: 0 0 30px rgba(77, 242, 194, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.2);
+      }
+      50% {
+        box-shadow: 0 0 50px rgba(77, 242, 194, 0.7), inset 0 0 30px rgba(255, 255, 255, 0.4);
+      }
+    }
+
+    /* Warp Animation */
+    .warp-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .warp-overlay.active {
+      pointer-events: all;
+      opacity: 1;
+    }
+
+    .warp-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle, #000 0%, #02040a 50%, transparent 100%);
+      transform: translate(-50%, -50%);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: inset 0 0 100px rgba(77, 242, 194, 0.6), 0 0 100px rgba(77, 242, 194, 0.4);
+    }
+
+    .warp-overlay.active .warp-circle {
+      width: 300vmax;
+      height: 300vmax;
+    }
+
+    /* Pitbits Realm */
+    .pitbits-realm {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: radial-gradient(circle at center, #0a0515 0%, #02040a 50%, #000 100%);
+      opacity: 0;
+      pointer-events: none;
+      overflow-y: auto;
+      transition: opacity 0.5s ease 0.8s;
+    }
+
+    .pitbits-realm.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .pitbits-realm-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 60px 20px;
+      transform: scale(0.8);
+      opacity: 0;
+      transition: all 0.6s ease 1s;
+    }
+
+    .pitbits-realm.active .pitbits-realm-content {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .realm-close {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      background: rgba(77, 242, 194, 0.1);
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--accent);
+      z-index: 10001;
+      transition: all 0.3s ease;
+    }
+
+    .realm-close:hover {
+      background: rgba(77, 242, 194, 0.2);
+      transform: rotate(90deg);
+    }
+
+    .realm-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .realm-title {
+      font-family: "Space Grotesk", system-ui;
+      font-size: 48px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #4df2c2, #46a9ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+
+    .realm-subtitle {
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .realm-title {
+        font-size: 32px;
+      }
+      .realm-close {
+        top: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+      }
+    }
   </style>
 </head>
 
@@ -1808,12 +1961,13 @@
           </div>
         </a>
         <nav class="nav-links">
+          <a href="javascript:void(0)" onclick="openPortal()" style="color: #4df2c2;">Pitbits Realm</a>
           <a href="#about">About</a>
           <a href="#mint">Mint</a>
           <a href="#traits">Traits</a>
-          <a href="#pitbits">Origin</a>
           <a href="#staking">Staking</a>
           <a href="#roadmap">Roadmap</a>
+          <a href="#pitbits">Origin</a>
           <a href="#creator">Creator</a>
           <a href="#faq">FAQ</a>
         </nav>
@@ -1837,15 +1991,94 @@
     <!-- Mobile Menu -->
     <div class="mobile-overlay" id="mobileOverlay"></div>
     <nav class="mobile-menu" id="mobileMenu">
+      <a href="javascript:void(0)" onclick="closeMobileMenu(); openPortal();" style="color: #4df2c2;">Pitbits Realm</a>
       <a href="#about" onclick="closeMobileMenu()">About</a>
       <a href="#mint" onclick="closeMobileMenu()">Mint</a>
       <a href="#traits" onclick="closeMobileMenu()">Traits</a>
-      <a href="#pitbits" onclick="closeMobileMenu()">Origin</a>
       <a href="#staking" onclick="closeMobileMenu()">Staking</a>
       <a href="#roadmap" onclick="closeMobileMenu()">Roadmap</a>
+      <a href="#pitbits" onclick="closeMobileMenu()">Origin</a>
       <a href="#creator" onclick="closeMobileMenu()">Creator</a>
       <a href="#faq" onclick="closeMobileMenu()">FAQ</a>
     </nav>
+
+    <!-- Portal Warp Effect -->
+    <div class="warp-overlay" id="warpOverlay">
+      <div class="warp-circle"></div>
+    </div>
+
+    <!-- Pitbits Realm -->
+    <div class="pitbits-realm" id="pitbitsRealm">
+      <button class="realm-close" onclick="closePortal()">✕</button>
+      <div class="pitbits-realm-content">
+        <div class="realm-header">
+          <h1 class="realm-title">The Pitbits Realm</h1>
+          <p class="realm-subtitle">Where the original explorers continue their journey on Cronos</p>
+        </div>
+
+        <div style="display: grid; gap: 24px;">
+          <div class="card" style="border: 2px solid rgba(77, 242, 194, 0.3);">
+            <div class="card-label" style="color: #4df2c2;">Collection Info</div>
+            <h3 class="card-title">Pitbits NFT Collection</h3>
+            <div class="card-body">
+              <p><strong>Pitbits</strong> are the original pixelated explorers that started it all. Born on the Cronos blockchain, these NFTs represent the foundation of the Nomad Dogs universe.</p>
+              <ul class="card-list">
+                <li><strong>Blockchain:</strong> Cronos (CRO)</li>
+                <li><strong>Total Supply:</strong> 999</li>
+                <li><strong>Art Style:</strong> Pixelated, Retro Aesthetic</li>
+                <li><strong>Status:</strong> Minting </li>
+                <li><strong>Mint Price:</strong> 99 CRO</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card" style="border: 2px solid rgba(77, 242, 194, 0.3);">
+            <div class="card-label" style="color: #4df2c2;">Staking Rewards</div>
+            <h3 class="card-title">Non-Custodial Staking</h3>
+            <div class="card-body">
+              <p>Pitbits holders can stake their NFTs on the <strong>Gaia non-custodial platform</strong> to earn rewards while maintaining full ownership.</p>
+              <ul class="card-list">
+                <li>Keep your NFTs in your wallet</li>
+                <li>Earn passive rewards</li>
+                <li>Unstake anytime without penalties</li>
+                <li>Same platform as Nomad Dogs staking</li>
+              </ul>
+              <a href="https://allstake.io/staking" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="margin-top: 16px; display: inline-flex;">
+                <span>Stake Pitbits Now</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" style="border: 2px solid rgba(77, 242, 194, 0.3);">
+            <div class="card-label" style="color: #4df2c2;">Special Benefits</div>
+            <h3 class="card-title">Pitbit Holder Rewards</h3>
+            <div class="card-body">
+              <p>Original Pitbits holders receive exclusive recognition in the Nomad Dogs ecosystem:</p>
+              <ul class="card-list">
+                <li><strong>1:1 Allocation:</strong> Get 1 Nomad Dog for every 1 Pitbit you hold</li>
+                <li><strong>Reserved Supply:</strong> Exclusive allocation guaranteed for Pitbit holders</li>
+                <li><strong>OG Status:</strong> Recognition as original believers</li>
+                <li><strong>Community Access:</strong> Special roles and benefits</li>
+                <li><strong>Multi-Chain Presence:</strong> Assets on both Cronos & Monad</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card" style="background: rgba(77, 242, 194, 0.05); border: 2px solid rgba(77, 242, 194, 0.3);">
+            <div class="card-label" style="color: #4df2c2;">Get Your Pitbit</div>
+            <h3 class="card-title">Mint on Cronos</h3>
+            <div class="card-body">
+              <p>Join the original explorer community. Pitbits continue to thrive on Cronos with active staking and community engagement.</p>
+              <a href="https://allstake.io/launches/pitbits" target="_blank" rel="noopener noreferrer" class="btn" style="margin-top: 16px; display: inline-flex; align-items: center; gap: 8px;">
+                <span>Mint Pitbits Now</span>
+                <span style="font-size: 11px; opacity: 0.9;">99 CRO</span>
+              </a>
+              <p style="margin-top: 16px; font-size: 12px; color: var(--text-muted);">Pitbits and Nomad Dogs exist in parallel — both collections have unique value and purpose.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <main id="top">
       <!-- HERO -->
@@ -2087,79 +2320,6 @@
                 <strong>Contract:</strong> <a href="https://monadscan.com/address/0xbD11e8799E1D48fe607B6a471C66de84522e49c1" target="_blank" rel="noopener noreferrer" style="color: #4df2c2; text-decoration: none;">0xbD11e8799E1D48fe607B6a471C66de84522e49c1</a>
               </p>
             </aside>
-          </div>
-        </div>
-      </section>
-
-
-      <!-- PITBITS EVOLUTION -->
-      <section id="pitbits" style="background: linear-gradient(135deg, rgba(77, 242, 194, 0.03), rgba(70, 169, 255, 0.03)); padding: 60px 0;">
-        <div class="inner">
-          <div class="section-header">
-            <div>
-              <div class="section-tag" style="color: #4df2c2;">Origin Story</div>
-              <h2 class="section-title">From Pitbits to Nomad Dogs</h2>
-            </div>
-            <div class="section-subtitle">
-              The Pitbits discovered a portal to Monad — a dimension where speed and energy reshape everything. While the original Pitbits continue their journey on Cronos, their evolution into Nomad Dogs represents a new chapter on a different chain.
-            </div>
-          </div>
-
-          <div class="card-row">
-            <article class="card" style="border: 1px solid rgba(77, 242, 194, 0.2);">
-              <div class="card-label" style="color: #4df2c2;">Still Active on Cronos</div>
-              <h3 class="card-title">Pitbits Continue</h3>
-              <div class="card-body">
-                <p>
-                  The <strong>Pitbits</strong> live on the Cronos blockchain — a pixelated, experimental NFT collection that's still active and thriving. Each Pitbit carries distinct traits and a spirit of exploration, representing the original vision.
-                </p>
-                <p>
-                  These aren't gone or replaced. The Pitbits community remains strong on Cronos. They represent the foundation — the original believers who supported the vision from day one.
-                </p>
-                <p>
-                  Pitbits are also available for staking on the same non-custodial platform that supports Nomad Dogs, allowing holders to earn rewards while keeping full ownership of their NFTs.
-                </p>
-                <ul class="card-list">
-                  <li><strong>Chain:</strong> Cronos (CRO) — Still Active</li>
-                  <li><strong>Collection Type:</strong> Pixelated, experimental NFTs</li>
-                  <li><strong>Status:</strong> Ongoing</li>
-                  <li><strong>Staking:</strong> Available on Gaia non-custodial platform</li>
-                  <li><strong>Community:</strong> Original holders and explorers</li>
-                </ul>
-                <a href="https://allstake.io/launches/pitbits" target="_blank" rel="noopener noreferrer" class="btn" style="margin-top: 16px; display: inline-flex; align-items: center; gap: 8px;">
-                  <span>Mint Pitbits on Cronos</span>
-                  <span style="font-size: 11px; opacity: 0.9;">99 CRO</span>
-                </a>
-              </div>
-            </article>
-
-            <article class="card" style="border: 1px solid rgba(77, 242, 194, 0.2);">
-              <div class="card-label" style="color: #4df2c2;">Parallel Evolution</div>
-              <h3 class="card-title">Nomad Dogs on Monad</h3>
-              <div class="card-body">
-                <p>
-                  Nomad Dogs are a <strong>parallel evolution</strong> — not a replacement, but a new life on an alternate network. Built as <strong>fully vector-rebuilt</strong> versions with cleaner lines, sharper detail, and richer traits, they're designed for Monad's high-speed capabilities.
-                </p>
-                <p>
-                  Think of it as a multiverse: Pitbits thrive on Cronos while Nomad Dogs explore Monad. Both collections exist, both have value, and holders of the original Pitbits receive special recognition in the Nomad Dogs ecosystem.
-                </p>
-                <ul class="card-list">
-                  <li><strong>Chain:</strong> Monad (MON) — New Territory</li>
-                  <li><strong>Art Style:</strong> Fully vector, high-detail upgrades</li>
-                  <li><strong>Traits:</strong> 186 attributes across 8 categories</li>
-                  <li><strong>Relationship:</strong> Spiritual successor, not replacement</li>
-                </ul>
-                <div style="margin-top: 16px; padding: 12px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.3);">
-                  <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: #FFD700;">
-                    <span style="font-size: 16px;">ℹ️</span>
-                    <strong>Reserved for Pitbit Holders:</strong>
-                  </div>
-                  <p style="font-size: 11px; margin-top: 6px; color: var(--text-muted);">
-                    A portion of the Nomad Dogs supply is reserved exclusively for original Pitbits holders as a thank-you for supporting the journey. Both collections live on — Cronos and Monad, side by side.
-                  </p>
-                </div>
-              </div>
-            </article>
           </div>
         </div>
       </section>
@@ -2655,6 +2815,85 @@
           </div>
         </div>
       </section>
+
+      <!-- PITBITS EVOLUTION -->
+      <section id="pitbits" style="background: linear-gradient(135deg, rgba(77, 242, 194, 0.03), rgba(70, 169, 255, 0.03)); padding: 60px 0;">
+        <div class="inner">
+          <div class="section-header">
+            <div>
+              <div class="section-tag" style="color: #4df2c2;">Origin Story</div>
+              <h2 class="section-title">From Pitbits to Nomad Dogs</h2>
+            </div>
+            <div class="section-subtitle">
+              The Pitbits discovered a portal to Monad — a dimension where speed and energy reshape everything. While the original Pitbits continue their journey on Cronos, their evolution into Nomad Dogs represents a new chapter on a different chain.
+            </div>
+          </div>
+
+          <div class="card-row">
+            <article class="card" style="border: 1px solid rgba(77, 242, 194, 0.2);">
+              <div class="card-label" style="color: #4df2c2;">Still Active on Cronos</div>
+              <h3 class="card-title">Pitbits Continue</h3>
+              <div class="card-body">
+                <p>
+                  The <strong>Pitbits</strong> live on the Cronos blockchain — a pixelated, experimental NFT collection that's still active and thriving. Each Pitbit carries distinct traits and a spirit of exploration, representing the original vision.
+                </p>
+                <p>
+                  These aren't gone or replaced. The Pitbits community remains strong on Cronos. They represent the foundation — the original believers who supported the vision from day one.
+                </p>
+                <p>
+                  Pitbits are also available for staking on the same non-custodial platform that supports Nomad Dogs, allowing holders to earn rewards while keeping full ownership of their NFTs.
+                </p>
+                <ul class="card-list">
+                  <li><strong>Chain:</strong> Cronos (CRO) — Still Active</li>
+                  <li><strong>Collection Type:</strong> Pixelated, experimental NFTs</li>
+                  <li><strong>Status:</strong> Ongoing</li>
+                  <li><strong>Staking:</strong> Available on Gaia non-custodial platform</li>
+                  <li><strong>Community:</strong> Original holders and explorers</li>
+                </ul>
+                <a href="https://allstake.io/launches/pitbits" target="_blank" rel="noopener noreferrer" class="btn" style="margin-top: 16px; display: inline-flex; align-items: center; gap: 8px;">
+                  <span>Mint Pitbits on Cronos</span>
+                  <span style="font-size: 11px; opacity: 0.9;">99 CRO</span>
+                </a>
+              </div>
+            </article>
+
+            <article class="card" style="border: 1px solid rgba(77, 242, 194, 0.2);">
+              <div class="card-label" style="color: #4df2c2;">Parallel Evolution</div>
+              <h3 class="card-title">Nomad Dogs on Monad</h3>
+              <div class="card-body">
+                <p>
+                  Nomad Dogs are a <strong>parallel evolution</strong> — not a replacement, but a new life on an alternate network. Built as <strong>fully vector-rebuilt</strong> versions with cleaner lines, sharper detail, and richer traits, they're designed for Monad's high-speed capabilities.
+                </p>
+                <p>
+                  Think of it as a multiverse: Pitbits thrive on Cronos while Nomad Dogs explore Monad. Both collections exist, both have value, and holders of the original Pitbits receive special recognition in the Nomad Dogs ecosystem.
+                </p>
+                <ul class="card-list">
+                  <li><strong>Chain:</strong> Monad (MON) — New Territory</li>
+                  <li><strong>Art Style:</strong> Fully vector, high-detail upgrades</li>
+                  <li><strong>Traits:</strong> 186 attributes across 8 categories</li>
+                  <li><strong>Relationship:</strong> Spiritual successor, not replacement</li>
+                </ul>
+                <div style="margin-top: 16px; padding: 12px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.3);">
+                  <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: #FFD700;">
+                    <span style="font-size: 16px;">ℹ️</span>
+                    <strong>Reserved for Pitbit Holders:</strong>
+                  </div>
+                  <p style="font-size: 11px; margin-top: 6px; color: var(--text-muted);">
+                    A portion of the Nomad Dogs supply is reserved exclusively for original Pitbits holders as a thank-you for supporting the journey. Both collections live on — Cronos and Monad, side by side.
+                  </p>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div style="text-align: center; margin-top: 32px;">
+            <button class="portal-btn" onclick="openPortal()">
+              🌀 Enter Pitbits Realm
+            </button>
+          </div>
+        </div>
+      </section>
+
 
       <!-- CREATOR -->
       <section id="creator" style="background: linear-gradient(135deg, rgba(77, 242, 194, 0.05), rgba(70, 169, 255, 0.05)); padding: 60px 0;">
@@ -3221,6 +3460,40 @@
       btn.classList.remove('active');
       menu.classList.remove('active');
       overlay.classList.remove('active');
+    }
+
+    // Portal animation
+    function openPortal() {
+      const warpOverlay = document.getElementById('warpOverlay');
+      const pitbitsRealm = document.getElementById('pitbitsRealm');
+      
+      // Start warp animation
+      warpOverlay.classList.add('active');
+      
+      // Show realm after warp completes
+      setTimeout(() => {
+        pitbitsRealm.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }, 800);
+    }
+
+    function closePortal() {
+      const warpOverlay = document.getElementById('warpOverlay');
+      const pitbitsRealm = document.getElementById('pitbitsRealm');
+      
+      // Start warp animation (circle expands to cover screen)
+      warpOverlay.classList.add('active');
+      
+      // Hide realm while warp is covering screen
+      setTimeout(() => {
+        pitbitsRealm.classList.remove('active');
+        document.body.style.overflow = '';
+      }, 400);
+      
+      // After warp covers everything, close the warp (circle shrinks back)
+      setTimeout(() => {
+        warpOverlay.classList.remove('active');
+      }, 800);
     }
 
     // Mobile menu event listeners
