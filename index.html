@@ -1942,6 +1942,301 @@
         height: 44px;
       }
     }
+
+    /* Trait Remix Lab Styles */
+    .remix-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 10000;
+      overflow-y: auto;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .remix-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .remix-container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 80px auto 40px;
+      padding: 0 20px;
+    }
+
+    .remix-close {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(77, 242, 194, 0.3);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--accent);
+      z-index: 10001;
+      transition: all 0.3s ease;
+    }
+
+    .remix-close:hover {
+      background: rgba(77, 242, 194, 0.2);
+      transform: rotate(90deg);
+    }
+
+    .remix-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .remix-title {
+      font-family: "Space Grotesk", system-ui;
+      font-size: 48px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #46a9ff, #4df2c2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+
+    .remix-subtitle {
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .remix-verify-section {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(77, 242, 194, 0.2);
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .remix-verify-section h3 {
+      font-size: 24px;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .remix-verify-section p {
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .remix-content {
+      display: none;
+      grid-template-columns: 1fr 400px;
+      gap: 30px;
+    }
+
+    .remix-content.active {
+      display: grid;
+    }
+
+    .remix-canvas-section {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(77, 242, 194, 0.2);
+      border-radius: 16px;
+      padding: 30px;
+    }
+
+    .remix-canvas-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .remix-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .remix-preview-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .remix-placeholder {
+      color: var(--text-muted);
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .remix-export-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .remix-controls {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(77, 242, 194, 0.2);
+      border-radius: 16px;
+      padding: 30px;
+      height: fit-content;
+    }
+
+    .remix-section {
+      margin-bottom: 30px;
+    }
+
+    .remix-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .remix-section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .remix-option {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(77, 242, 194, 0.15);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .remix-option:hover {
+      background: rgba(77, 242, 194, 0.05);
+      border-color: rgba(77, 242, 194, 0.3);
+    }
+
+    .remix-option.active {
+      background: rgba(77, 242, 194, 0.1);
+      border-color: var(--accent);
+    }
+
+    .remix-option-label {
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .remix-option-badge {
+      background: rgba(77, 242, 194, 0.2);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .remix-toggle {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(77, 242, 194, 0.15);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .remix-toggle:hover {
+      background: rgba(77, 242, 194, 0.05);
+      border-color: rgba(77, 242, 194, 0.3);
+    }
+
+    .remix-toggle-switch {
+      width: 44px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      position: relative;
+      transition: background 0.3s ease;
+    }
+
+    .remix-toggle.active .remix-toggle-switch {
+      background: var(--accent);
+    }
+
+    .remix-toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+
+    .remix-toggle.active .remix-toggle-switch::after {
+      transform: translateX(20px);
+    }
+
+    .remix-toggle-label {
+      color: var(--text);
+      font-size: 14px;
+      flex: 1;
+    }
+
+    @media (max-width: 960px) {
+      .remix-content {
+        grid-template-columns: 1fr;
+      }
+
+      .remix-title {
+        font-size: 36px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .remix-title {
+        font-size: 28px;
+      }
+
+      .remix-close {
+        top: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+      }
+
+      .remix-canvas-section,
+      .remix-controls {
+        padding: 20px;
+      }
+    }
   </style>
 </head>
 
@@ -2096,7 +2391,7 @@
               <div class="hero-kpis">
                 <div class="hero-kpi">
                   <div class="hero-kpi-label">Mint</div>
-                  <div class="hero-kpi-value">50&nbsp;$MON <span id="hero-usd-price" style="font-size: 14px; color: var(--text-muted);"></span></div>
+                  <div class="hero-kpi-value">45&nbsp;$MON <span id="hero-usd-price" style="font-size: 14px; color: var(--text-muted);"></span></div>
                 </div>
                 <div class="hero-kpi">
                   <div class="hero-kpi-label">Total supply</div>
@@ -2164,11 +2459,21 @@
                     <div class="meta-row">
                       <div class="meta-tag">
                         <div class="meta-label">Mint</div>
-                        <div class="meta-value">50&nbsp;$MON</div>
+                        <div class="meta-value">45&nbsp;$MON</div>
                       </div>
+                      <div class="meta-tag">
+                        <div class="meta-label">Protocol Fee</div>
+                        <div class="meta-value">15&nbsp;$MON</div>
+                      </div>
+                    </div>
+                    <div class="meta-row">
                       <div class="meta-tag">
                         <div class="meta-label">Max / wallet</div>
                         <div class="meta-value">100</div>
+                      </div>
+                      <div class="meta-tag">
+                        <div class="meta-label"></div>
+                        <div class="meta-value"></div>
                       </div>
                     </div>
                   </div>
@@ -2243,7 +2548,7 @@
                 <p>Transparent numbers. No hidden gotchas.</p>
                 <ul class="card-list">
                   <li><strong>Supply:</strong> 4444 total Nomads.</li>
-                  <li><strong>Mint:</strong> 50&nbsp;$MON per Nomad <span id="about-usd-price" style="color: var(--text-muted);"></span></li>
+                  <li><strong>Mint:</strong> 45&nbsp;$MON per Nomad (+ 15 $MON protocol fee) <span id="about-usd-price" style="color: var(--text-muted);"></span></li>
                   <li><strong>Reserved:</strong> 999 for collabs, airdrops, and ecosystem alignment.</li>
                   <li><strong>Max per wallet:</strong> 100 (Subject to change).</li>
                   <li><strong>Chain:</strong> Monad mainnet.</li>
@@ -2277,13 +2582,13 @@
                 <div class="mint-price">
                   <span class="mint-price-label">Price per Nomad</span>
                   <div style="display: flex; align-items: center; gap: 10px;">
-                    <span class="mint-price-value">50&nbsp;$MON <span id="mint-usd-price" style="font-size: 13px; color: var(--text-muted);"></span></span>
+                    <span class="mint-price-value">45&nbsp;$MON <span id="mint-usd-price" style="font-size: 13px; color: var(--text-muted);"></span></span>
                     <div class="live-stat" style="font-size: 10px; padding: 4px 8px;">
                       <div class="live-dot"></div>
                       <span style="font-weight: 500;">LIVE PRICE</span>
                     </div>
                   </div>
-                  <span class="mint-price-sub">Gas on top. Chain: Monad.</span>
+                  <span class="mint-price-sub">+ 15 $MON protocol fee. Gas on top. Chain: Monad.</span>
                 </div>
                 <div class="mint-supply">
                   <div class="mint-supply-item">
@@ -2679,6 +2984,29 @@
             </div>
           </div>
 
+          <!-- Trait Remix Lab Card -->
+          <div class="card" style="margin-top: 30px; border: 2px solid rgba(70, 169, 255, 0.3); background: linear-gradient(135deg, rgba(70, 169, 255, 0.05), rgba(77, 242, 194, 0.05));">
+            <div class="card-label" style="color: #46a9ff;">🎨 Holder-Only Tool</div>
+            <h3 class="card-title" style="background: linear-gradient(135deg, #46a9ff, #4df2c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Trait Lab</h3>
+            <div class="card-body">
+              <p style="margin-bottom: 16px;">
+                An exclusive interactive tool for Nomad Dog holders. Preview alternate backgrounds, toggle rare overlays, experiment with what-if trait combinations, and export custom social banners.
+              </p>
+              <div style="background: rgba(70, 169, 255, 0.1); padding: 16px; border-radius: 8px; border: 1px solid rgba(70, 169, 255, 0.2); margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                  <span style="font-size: 20px;">⏳</span>
+                  <strong style="color: #46a9ff;">Coming Soon After Reveal</strong>
+                </div>
+                <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
+                  The Remix Lab will be unlocked once NFTs are revealed. Holders will be able to remix their Nomad Dogs with alternate backgrounds, and experimental trait combinations — all with instant preview and export capabilities.
+                </p>
+              </div>
+              <button class="btn btn-outline" onclick="openRemixLab()" style="opacity: 0.7; cursor: not-allowed;" disabled>
+                <span>🔒 Available After Reveal</span>
+              </button>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -2994,6 +3322,121 @@
           </div>
         </div>
       </section>
+
+      <!-- Trait Remix Lab Overlay -->
+      <div class="remix-overlay" id="remixOverlay">
+        <div class="remix-close" onclick="closeRemixLab()">✕</div>
+        <div class="remix-container">
+          <div class="remix-header">
+            <h1 class="remix-title">🎨 Trait Remix Lab</h1>
+            <p class="remix-subtitle">Exclusive tool for Nomad Dog holders — Remix traits, preview combinations, and export custom designs</p>
+          </div>
+
+          <!-- Verification Section -->
+          <div class="remix-verify-section" id="remixVerifySection">
+            <h3>🔒 Holder Verification Required</h3>
+            <p>The Trait Remix Lab is an exclusive tool for Nomad Dog holders. Connect your wallet and verify ownership to unlock access.</p>
+            <button class="btn" onclick="verifyRemixAccess()">
+              <span>Connect Wallet & Verify</span>
+            </button>
+            <div id="remixVerifyStatus" style="margin-top: 20px;"></div>
+          </div>
+
+          <!-- Remix Content (Hidden until verified) -->
+          <div class="remix-content" id="remixContent">
+            <!-- Canvas Section -->
+            <div class="remix-canvas-section">
+              <div class="remix-canvas-wrapper">
+                <div class="remix-canvas" id="remixCanvas">
+                  <div class="remix-placeholder">Select options to preview your remix →</div>
+                </div>
+              </div>
+              
+              <div class="remix-export-actions">
+                <button class="btn" onclick="exportRemix('pfp')">
+                  <span>Export as PFP (1:1)</span>
+                </button>
+                <button class="btn btn-outline" onclick="exportRemix('banner')">
+                  <span>Export as Banner (3:1)</span>
+                </button>
+                <button class="btn btn-outline" onclick="resetRemix()">
+                  <span>Reset All</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Controls Section -->
+            <div class="remix-controls">
+              <!-- Background Options -->
+              <div class="remix-section">
+                <div class="remix-section-title">🌈 Alternate Backgrounds</div>
+                <div class="remix-option" onclick="selectBackground('cyberpunk')" data-bg="cyberpunk">
+                  <span class="remix-option-label">Cyberpunk Neon</span>
+                  <span class="remix-option-badge">NEW</span>
+                </div>
+                <div class="remix-option" onclick="selectBackground('cosmic')" data-bg="cosmic">
+                  <span class="remix-option-label">Cosmic Void</span>
+                </div>
+                <div class="remix-option" onclick="selectBackground('desert')" data-bg="desert">
+                  <span class="remix-option-label">Desert Wasteland</span>
+                </div>
+                <div class="remix-option" onclick="selectBackground('forest')" data-bg="forest">
+                  <span class="remix-option-label">Mystic Forest</span>
+                </div>
+                <div class="remix-option" onclick="selectBackground('ocean')" data-bg="ocean">
+                  <span class="remix-option-label">Deep Ocean</span>
+                </div>
+                <div class="remix-option" onclick="selectBackground('original')" data-bg="original">
+                  <span class="remix-option-label">Original</span>
+                  <span class="remix-option-badge">DEFAULT</span>
+                </div>
+              </div>
+
+              <!-- Rare Overlays -->
+              <div class="remix-section">
+                <div class="remix-section-title">✨ Rare Overlays</div>
+                <div class="remix-toggle" onclick="toggleOverlay('holographic', this)">
+                  <div class="remix-toggle-switch"></div>
+                  <span class="remix-toggle-label">Holographic Effect</span>
+                </div>
+                <div class="remix-toggle" onclick="toggleOverlay('legendary', this)">
+                  <div class="remix-toggle-switch"></div>
+                  <span class="remix-toggle-label">Legendary Aura</span>
+                </div>
+                <div class="remix-toggle" onclick="toggleOverlay('diamond', this)">
+                  <div class="remix-toggle-switch"></div>
+                  <span class="remix-toggle-label">Diamond Shine</span>
+                </div>
+                <div class="remix-toggle" onclick="toggleOverlay('fire', this)">
+                  <div class="remix-toggle-switch"></div>
+                  <span class="remix-toggle-label">Fire Animation</span>
+                </div>
+              </div>
+
+              <!-- Trait Combinations -->
+              <div class="remix-section">
+                <div class="remix-section-title">🎭 What-If Traits</div>
+                <div class="remix-option" onclick="selectTraitCombo('royal')" data-combo="royal">
+                  <span class="remix-option-label">Royal Set (Crown + Cape)</span>
+                  <span class="remix-option-badge">RARE</span>
+                </div>
+                <div class="remix-option" onclick="selectTraitCombo('warrior')" data-combo="warrior">
+                  <span class="remix-option-label">Warrior Set (Armor + Sword)</span>
+                </div>
+                <div class="remix-option" onclick="selectTraitCombo('wizard')" data-combo="wizard">
+                  <span class="remix-option-label">Wizard Set (Hat + Staff)</span>
+                </div>
+                <div class="remix-option" onclick="selectTraitCombo('ninja')" data-combo="ninja">
+                  <span class="remix-option-label">Ninja Set (Mask + Katana)</span>
+                </div>
+                <div class="remix-option" onclick="selectTraitCombo('pirate')" data-combo="pirate">
+                  <span class="remix-option-label">Pirate Set (Hat + Hook)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- FAQ -->
       <section id="faq">
@@ -3496,6 +3939,164 @@
       }, 800);
     }
 
+    // Trait Remix Lab Functions
+    let remixVerified = false;
+    let selectedBackground = 'original';
+    let activeOverlays = [];
+    let selectedCombo = null;
+
+    function openRemixLab() {
+      document.getElementById('remixOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeRemixLab() {
+      document.getElementById('remixOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    async function verifyRemixAccess() {
+      const statusDiv = document.getElementById('remixVerifyStatus');
+      statusDiv.innerHTML = '<div style="color: var(--text-muted);">Verifying access...</div>';
+      
+      // Owner verification token
+      const OWNER_TOKEN_ADDRESS = '0x00000000001594C61dD8a6804da9AB58eD2483ce';
+      const OWNER_TOKEN_ID = '1079398619788753336914465116092180912095045241281';
+      
+      try {
+        // Connect wallet if not connected
+        if (!provider || !userAddress) {
+          const connected = await connectWallet();
+          if (!connected) {
+            statusDiv.innerHTML = '<div style="color: #ff4d4d;">Failed to connect wallet. Please try again.</div>';
+            return;
+          }
+        }
+
+        // Check if user holds the owner token first
+        const ownerTokenABI = [
+          "function ownerOf(uint256 tokenId) view returns (address)"
+        ];
+        
+        try {
+          const ownerTokenContract = new ethers.Contract(OWNER_TOKEN_ADDRESS, ownerTokenABI, provider);
+          const tokenOwner = await ownerTokenContract.ownerOf(OWNER_TOKEN_ID);
+          
+          if (tokenOwner.toLowerCase() === userAddress.toLowerCase()) {
+            // User holds the owner token - grant access
+            remixVerified = true;
+            statusDiv.innerHTML = '<div style="color: var(--accent);">✓ Verified! You are the collection owner</div>';
+            
+            setTimeout(() => {
+              document.getElementById('remixVerifySection').style.display = 'none';
+              document.getElementById('remixContent').classList.add('active');
+            }, 1500);
+            return;
+          }
+        } catch (ownerCheckError) {
+          console.log('Owner token check failed, checking Nomad Dogs ownership:', ownerCheckError);
+        }
+
+        // Check NFT balance for regular holders
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+        const balance = await contract.balanceOf(userAddress);
+        
+        if (balance.toNumber() > 0) {
+          remixVerified = true;
+          statusDiv.innerHTML = `<div style="color: var(--accent);">✓ Verified! You own ${balance.toNumber()} Nomad Dog(s)</div>`;
+          
+          setTimeout(() => {
+            document.getElementById('remixVerifySection').style.display = 'none';
+            document.getElementById('remixContent').classList.add('active');
+          }, 1500);
+        } else {
+          statusDiv.innerHTML = '<div style="color: #ff4d4d;">❌ No Nomad Dogs found in your wallet. You must own at least one NFT to access the Remix Lab.</div>';
+        }
+      } catch (error) {
+        console.error('Verification error:', error);
+        statusDiv.innerHTML = '<div style="color: #ff4d4d;">Verification failed. Please try again.</div>';
+      }
+    }
+
+    function selectBackground(bg) {
+      selectedBackground = bg;
+      
+      // Update UI
+      document.querySelectorAll('[data-bg]').forEach(option => {
+        option.classList.remove('active');
+      });
+      document.querySelector(`[data-bg="${bg}"]`).classList.add('active');
+      
+      updateRemixPreview();
+    }
+
+    function toggleOverlay(overlay, element) {
+      element.classList.toggle('active');
+      
+      const index = activeOverlays.indexOf(overlay);
+      if (index > -1) {
+        activeOverlays.splice(index, 1);
+      } else {
+        activeOverlays.push(overlay);
+      }
+      
+      updateRemixPreview();
+    }
+
+    function selectTraitCombo(combo) {
+      selectedCombo = combo;
+      
+      // Update UI
+      document.querySelectorAll('[data-combo]').forEach(option => {
+        option.classList.remove('active');
+      });
+      document.querySelector(`[data-combo="${combo}"]`).classList.add('active');
+      
+      updateRemixPreview();
+    }
+
+    function updateRemixPreview() {
+      const canvas = document.getElementById('remixCanvas');
+      
+      // Build preview text (in production, this would composite actual images)
+      let previewHTML = '<div style="text-align: center; color: var(--text);">';
+      previewHTML += `<div style="font-size: 18px; margin-bottom: 12px; color: var(--accent);">Preview Mode</div>`;
+      previewHTML += `<div style="font-size: 14px; margin-bottom: 8px;">Background: <strong>${selectedBackground}</strong></div>`;
+      
+      if (activeOverlays.length > 0) {
+        previewHTML += `<div style="font-size: 14px; margin-bottom: 8px;">Overlays: <strong>${activeOverlays.join(', ')}</strong></div>`;
+      }
+      
+      if (selectedCombo) {
+        previewHTML += `<div style="font-size: 14px; margin-bottom: 8px;">Trait Combo: <strong>${selectedCombo}</strong></div>`;
+      }
+      
+      previewHTML += '<div style="margin-top: 16px; padding: 12px; background: rgba(70, 169, 255, 0.1); border-radius: 8px; font-size: 12px; color: var(--text-muted);">⏳ Image compositing will be available after NFT reveal. Your selections are being tracked for preview.</div>';
+      previewHTML += '</div>';
+      
+      canvas.innerHTML = previewHTML;
+    }
+
+    function exportRemix(format) {
+      if (!remixVerified) return;
+      
+      // In production, this would generate and download the actual image
+      alert(`Export as ${format.toUpperCase()} - Coming soon! This will generate a downloadable image with your selected remix settings.`);
+    }
+
+    function resetRemix() {
+      selectedBackground = 'original';
+      activeOverlays = [];
+      selectedCombo = null;
+      
+      // Reset UI
+      document.querySelectorAll('[data-bg], [data-combo]').forEach(el => el.classList.remove('active'));
+      document.querySelector('[data-bg="original"]').classList.add('active');
+      document.querySelectorAll('.remix-toggle').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById('remixCanvas').innerHTML = '<div class="remix-placeholder">Select options to preview your remix →</div>';
+    }
+
     // Mobile menu event listeners
     document.addEventListener('DOMContentLoaded', function() {
       const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -3658,8 +4259,8 @@
           
           // Fallback to static data if RPC fails
           const total = 4444;
-          const available = 3406;
-          const currentMinted = total - available;
+          const available = 3397;
+          const currentMinted = 1047;
           
           updateProgressBar(currentMinted, total);
           
@@ -3682,5 +4283,3 @@
   </script>
 </body>
 </html>
-
-
