@@ -11,7 +11,7 @@
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://nomadsonmonad.com/" />
+  <meta property="og:url" content="https://nomadshq.xyz/" />
   <meta property="og:title" content="Nomads on Monad - 4444 Explorers" />
   <meta property="og:description" content="Join 4444 explorers with advanced trait systems and on-chain adventures. Play Nomad Brawlers arena game and Nomad Rise price prediction climber." />
   <meta property="og:image" content="https://nomadshq.xyz/assets/metaemblem.png" />
@@ -22,7 +22,7 @@
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://nomadsonmonad.com/" />
+  <meta name="twitter:url" content="https://nomadshq.xyz/" />
   <meta name="twitter:title" content="Nomads on Monad - 4444 Explorers" />
   <meta name="twitter:description" content="Join 4444 explorers with advanced trait systems and on-chain adventures. Play Nomad Brawlers arena game and Nomad Rise price prediction climber." />
   <meta name="twitter:image" content="https://nomadshq.xyz/assets/metaemblem.png" />
@@ -3637,12 +3637,13 @@
       "function mint(uint256 amount) payable",
       "function mintingType() view returns (uint8)",
       
-      // Supply & Price (trying different possible names)
+      // Supply & Price - NFTs2Me specific function names
       "function totalSupply() view returns (uint256)",
       "function getPrice() view returns (uint256)",
-      "function maxTotalSupply() view returns (uint256)",
+      "function collectionSize() view returns (uint256)",
       "function maxPerAddress() view returns (uint256)",
       "function maxPerMint() view returns (uint256)",
+      "function reservedAmountForPresale() view returns (uint256)",
       
       // Standard ERC721
       "function balanceOf(address owner) view returns (uint256)",
@@ -3661,7 +3662,7 @@
       "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)"
     ];
 
-    // Monad RPC - UPDATE THIS WITH ACTUAL MONAD RPC
+    // Monad RPC
     const NETWORK_CONFIG = {
       chainId: `0x${CHAIN_ID.toString(16)}`,
       chainName: "Monad",
@@ -3670,8 +3671,8 @@
         symbol: "MON",
         decimals: 18
       },
-      rpcUrls: ["https://rpc.monad.network"], // TODO: Update with actual Monad RPC
-      blockExplorerUrls: ["https://explorer.monad.network"] // TODO: Update with actual explorer
+      rpcUrls: ["https://rpc.monad.xyz"],
+      blockExplorerUrls: ["https://monadscan.com"]
     };
 
     // Global state
@@ -3751,7 +3752,7 @@
       try {
         // Read contract data
         const totalSupply = await contract.totalSupply();
-        const maxSupply = await contract.maxTotalSupply();
+        const maxSupply = await contract.collectionSize();
         const price = await contract.getPrice();
         const maxPerWallet = await contract.maxPerAddress();
 
@@ -4258,39 +4259,45 @@
           const publicContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, publicProvider);
           
           const totalSupply = await publicContract.totalSupply();
-          const maxSupply = await publicContract.maxTotalSupply();
-          const price = await publicContract.getPrice();
+          const maxSupply = await publicContract.collectionSize();
           
-          const supplyNum = totalSupply.toNumber();
+          const minted = totalSupply.toNumber();
           const maxNum = maxSupply.toNumber();
+          const reservedNum = 999; // Fixed reserved amount for Pitbits holders & team
+          const remaining = maxNum - minted - reservedNum;
+          const progressCount = minted + reservedNum; // Progress = minted + reserved
           
-          updateProgressBar(supplyNum, maxNum);
+          updateProgressBar(progressCount, maxNum);
           
           // Update live mint counts in traits section
           const liveMintCount = document.getElementById('liveMintCount');
           const liveAvailable = document.getElementById('liveAvailable');
-          if (liveMintCount) liveMintCount.textContent = supplyNum;
-          if (liveAvailable) liveAvailable.textContent = maxNum - supplyNum;
+          if (liveMintCount) liveMintCount.textContent = progressCount; // Show minted + reserved
+          if (liveAvailable) liveAvailable.textContent = remaining;
           
           console.log('Loaded contract data:', {
-            totalSupply: supplyNum,
-            maxSupply: maxNum,
-            price: ethers.utils.formatEther(price) + ' MON'
+            minted: minted,
+            reserved: reservedNum,
+            remaining: remaining,
+            totalSupply: maxNum,
+            progress: progressCount
           });
         } catch (error) {
           console.error('Error loading contract data:', error);
           
           // Fallback to static data if RPC fails
           const total = 4444;
-          const available = 999;
-          const currentMinted = 1050;
+          const minted = 51;
+          const reserved = 999;
+          const remaining = total - minted - reserved;
+          const progressCount = minted + reserved;
           
-          updateProgressBar(currentMinted, total);
+          updateProgressBar(progressCount, total);
           
           const liveMintCount = document.getElementById('liveMintCount');
           const liveAvailable = document.getElementById('liveAvailable');
-          if (liveMintCount) liveMintCount.textContent = currentMinted;
-          if (liveAvailable) liveAvailable.textContent = available;
+          if (liveMintCount) liveMintCount.textContent = progressCount; // Show minted + reserved
+          if (liveAvailable) liveAvailable.textContent = remaining;
           
           console.log('Using fallback static data due to RPC error');
         }
