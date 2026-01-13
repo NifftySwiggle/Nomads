@@ -2649,12 +2649,63 @@
                 revealed as per the collection config (instant or delayed).
               </p>
               <ul class="mint-side-list">
-                <li>Mint from this site or directly from the contract if you prefer.</li>
+                <li>Mint from this site (recommended) or directly from the contract if you prefer.</li>
                 <li>Reserved supply is held for Pitbit holders.</li>
               </ul>
               <p style="margin-top: 8px;">
                 <strong>Contract:</strong> <a href="https://monadscan.com/address/0xbD11e8799E1D48fe607B6a471C66de84522e49c1" target="_blank" rel="noopener noreferrer" style="color: #4df2c2; text-decoration: none;">0xbD11e8799E1D48fe607B6a471C66de84522e49c1</a>
               </p>
+              <div id="direct-mint-wrap" style="margin-top:16px;">
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <input id="mint-amount" type="number" min="1" max="100" value="1" style="width:60px;padding:6px 8px;border-radius:6px;border:1px solid #333;background:#181c24;color:#fff;"> 
+                  <button id="direct-mint-btn" class="btn" style="min-width:120px;">Mint Now</button>
+                </div>
+                <div id="mint-status" style="margin-top:10px;font-size:13px;color:#4df2c2;"></div>
+              </div>
+              <script>
+              // Direct mint logic
+              const contractAddress = '0xbD11e8799E1D48fe607B6a471C66de84522e49c1';
+              const contractABI = [
+                // Only the mint function (F13) ABI needed for this button
+                "function mint(uint256 amount) payable"
+              ];
+              const pricePerMint = 60; // 45 $MON + 15 $MON protocol fee (update if needed)
+              const decimals = 18; // $MON is likely 18 decimals
+
+              async function directMint() {
+                const status = document.getElementById('mint-status');
+                status.textContent = '';
+                if (!window.ethereum || !window.ethers) {
+                  status.textContent = 'Web3 wallet and ethers.js required.';
+                  return;
+                }
+                try {
+                  const amount = parseInt(document.getElementById('mint-amount').value);
+                  if (isNaN(amount) || amount < 1 || amount > 100) {
+                    status.textContent = 'Enter a valid mint amount (1-100).';
+                    return;
+                  }
+                  status.textContent = 'Connecting wallet...';
+                  await window.ethereum.request({ method: 'eth_requestAccounts' });
+                  const provider = new ethers.providers.Web3Provider(window.ethereum);
+                  const signer = provider.getSigner();
+                  const contract = new ethers.Contract(contractAddress, contractABI, signer);
+                  const totalCost = ethers.utils.parseUnits((pricePerMint * amount).toString(), decimals);
+                  status.textContent = 'Awaiting wallet signature...';
+                  const tx = await contract.mint(amount, { value: totalCost });
+                  status.textContent = 'Transaction sent. Waiting for confirmation...';
+                  await tx.wait();
+                  status.textContent = '✅ Mint successful! Check your wallet for your Nomad Dog(s).';
+                } catch (err) {
+                  if (err.code === 4001) {
+                    status.textContent = 'Transaction rejected by user.';
+                  } else {
+                    status.textContent = '❌ Mint failed: ' + (err?.data?.message || err?.message || 'Unknown error');
+                  }
+                }
+              }
+              document.getElementById('direct-mint-btn').onclick = directMint;
+              </script>
             </aside>
           </div>
         </div>
@@ -3129,7 +3180,8 @@
                 <div class="timeline-label">Phase two</div>
                 <div class="timeline-title">Non-Custoial Staking</div>
                 <div class="timeline-body">
-                  Hook Nomads into Gaia Ecosystem non custodial staking platform.
+                  Hook Nomads into Gaia Ecosystem non custodial staking platform.<br>
+                  MONAD will also be staked on Neverland to maintain MONAD income for the project, supporting ongoing development and community rewards.
                 </div>
               </div>
               <div class="timeline-item">
@@ -3163,11 +3215,13 @@
               <h3 class="card-title">Build soft, ship sharp</h3>
               <div class="card-body">
                 <p>
-                  The goal isn’t to promise the world — it’s to deliver consistently, without abusing attention. Nomads
-                  are built as a composable base, not a one‑shot.
+                  The goal isn’t to promise the world — it’s to deliver consistently, without abusing attention. Nomads are built as a composable base, not a one‑shot.
                 </p>
                 <p style="margin-top: 8px;">
                   Real utility comes from consistent execution, not empty promises. Every tool, every feature, and every update is designed to add genuine value to holders and strengthen the broader Web3 community.
+                </p>
+                <p style="margin-top: 8px;">
+                  By staking MONAD on Neverland, the project ensures a sustainable income stream that supports ongoing development, rewards the community, and aligns incentives for long-term growth. This approach reflects our commitment to transparency, sustainability, and building a resilient ecosystem for all participants.
                 </p>
               </div>
             </aside>
