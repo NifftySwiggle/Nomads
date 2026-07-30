@@ -2494,7 +2494,7 @@
                     <div class="meta-row">
                       <div class="meta-tag">
                         <div class="meta-label">Mint</div>
-                        <div class="meta-value">45&nbsp;$MON</div>
+                        <div class="meta-value">1&nbsp;USDC</div>
                       </div>
                       <div class="meta-tag">
                         <div class="meta-label">Protocol Fee</div>
@@ -2504,7 +2504,7 @@
                     <div class="meta-row">
                       <div class="meta-tag">
                         <div class="meta-label">Max / wallet</div>
-                        <div class="meta-value">100</div>
+                        <div class="meta-value">200</div>
                       </div>
                     </div>
                   </div>
@@ -2560,10 +2560,6 @@
                   <li><strong>Support a Builder:</strong> Your mint funds new tools and ecosystem growth.</li>
                 </ul>
                 <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
-                  <a href="https://magiceden.io/collections/monad/0xbD11e8799E1D48fe607B6a471C66de84522e49c1" target="_blank" rel="noopener noreferrer" class="btn" style="display: inline-flex; align-items: center; gap: 8px;">
-                    <span>View on Magic Eden</span>
-                    <span style="font-size: 18px;">→</span>
-                  </a>
                   <a href="https://opensea.io/collection/nomad-dogs" target="_blank" rel="noopener noreferrer" class="btn" style="display: inline-flex; align-items: center; gap: 8px;">
                     <span>View on OpenSea</span>
                     <span style="font-size: 18px;">→</span>
@@ -2581,7 +2577,7 @@
                   <li><strong>Supply:</strong> 4444 total Nomads.</li>
                   <li><strong>Mint:</strong> 45&nbsp;$MON per Nomad (+ 15 $MON protocol fee) <span id="about-usd-price" style="color: var(--text-muted);"></span></li>
                   <li><strong>Reserved:</strong> 999 for Pitbit airdrops.</li>
-                  <li><strong>Max per wallet:</strong> 100 (Subject to change).</li>
+                  <li><strong>Max per wallet:</strong> 200 (Subject to change).</li>
                   <li><strong>Chain:</strong> Monad mainnet.</li>
                 </ul>
                 <p style="margin-top: 10px; font-size: 12px;">
@@ -2669,7 +2665,7 @@
                 // Only the mint function (F13) ABI needed for this button
                 "function mint(uint256 amount) payable"
               ];
-              const pricePerMint = 60; // 45 $MON + 15 $MON protocol fee (update if needed)
+              const pricePerMint = 1; // 45 $MON + 15 $MON protocol fee (update if needed)
               const decimals = 18; // $MON is likely 18 decimals
 
               async function directMint() {
@@ -2681,8 +2677,8 @@
                 }
                 try {
                   const amount = parseInt(document.getElementById('mint-amount').value);
-                  if (isNaN(amount) || amount < 1 || amount > 100) {
-                    status.textContent = 'Enter a valid mint amount (1-100).';
+                  if (isNaN(amount) || amount < 1 || amount > 200) {
+                    status.textContent = 'Enter a valid mint amount (1-200).';
                     return;
                   }
                   status.textContent = 'Connecting wallet...';
@@ -3558,7 +3554,7 @@
               <div class="faq-item">
                 <div class="faq-q">Where can I see secondary listings?</div>
                 <div class="faq-a">
-                  View Nomad Dogs on <a href="https://magiceden.io/collections/monad/0xbD11e8799E1D48fe607B6a471C66de84522e49c1" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none;">Magic Eden</a> or <a href="https://opensea.io/collection/nomad-dogs" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none;">OpenSea</a>. Always verify the contract address (0xbD11...49c1) matches before buying.
+                  View Nomad Dogs on <a href="https://opensea.io/collection/nomad-dogs" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none;">OpenSea</a>. Always verify the contract address (0xbD11...49c1) matches before buying.
                 </div>
               </div>
 
@@ -3586,7 +3582,7 @@
               <div class="faq-item">
                 <div class="faq-q">What wallet do I need?</div>
                 <div class="faq-a">
-                  Any Monad-compatible wallet works. MetaMask, Rabby, or similar. Make sure to add Monad network (Chain ID 143) and have $MON for minting and gas fees.
+                  Any Monad-compatible wallet works. MetaMask, Rabby, or similar. Make sure to add Monad network (Chain ID 143) and have USDC & $MON for minting and gas fees.
                 </div>
               </div>
             </div>
@@ -3611,7 +3607,7 @@
               <div class="faq-item">
                 <div class="faq-q">Can I mint multiple Nomads?</div>
                 <div class="faq-a">
-                  Yes, up to 100 per wallet. Batch minting is supported to save on gas fees if you want multiple Nomads in one transaction.
+                  Yes, up to 200 per wallet. Batch minting is supported to save on gas fees if you want multiple Nomads in one transaction.
                 </div>
               </div>
 
@@ -3660,7 +3656,6 @@
 
         <div class="footer-links">
           <div style="margin-bottom: 12px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Marketplaces</div>
-          <a href="https://magiceden.io/collections/monad/0xbD11e8799E1D48fe607B6a471C66de84522e49c1" target="_blank" rel="noopener noreferrer">Magic Eden</a>
           <a href="https://opensea.io/collection/nomad-dogs" target="_blank" rel="noopener noreferrer">OpenSea</a>
           <a href="https://monadscan.com/address/0xbD11e8799E1D48fe607B6a471C66de84522e49c1" target="_blank" rel="noopener noreferrer">Monadscan Explorer</a>
         </div>
@@ -4226,7 +4221,7 @@
         
         if (data && data.monad && data.monad.usd) {
           const monadPriceUSD = data.monad.usd;
-          const mintPriceUSD = (50 * monadPriceUSD).toFixed(2);
+          const mintPriceUSD = 1;
           const usdText = `(~$${mintPriceUSD} USD)`;
           
           // Update all USD price displays
@@ -4251,7 +4246,7 @@
 
     // Mint counter logic (UI only – hook your contract call to mintButton)
     (function () {
-      const PRICE = 50; // MON per Nomad
+      const PRICE = 1; // USD per Nomad
       const min = 1;
       const max = 20;
 
@@ -4265,8 +4260,8 @@
 
       function updateTotal() {
         const amount = parseInt(amountEl.textContent || "1", 10);
-        const monTotal = PRICE * amount;
-        let totalText = monTotal + "&nbsp;$MON";
+        const usdTotal = PRICE * amount;
+        let totalText = usdTotal + "&nbsp;$MON";
         
         // Add USD equivalent if available
         if (window.monadPriceUSD) {
