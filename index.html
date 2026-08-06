@@ -2426,7 +2426,7 @@
               <div class="hero-kpis">
                 <div class="hero-kpi">
                   <div class="hero-kpi-label">Mint</div>
-                  <div class="hero-kpi-value">45&nbsp;$MON <span id="hero-usd-price" style="font-size: 14px; color: var(--text-muted);"></span></div>
+                  <div class="hero-kpi-value">1&nbsp;USDC <span id="hero-usd-price" style="font-size: 14px; color: var(--text-muted);"></span></div>
                 </div>
                 <div class="hero-kpi">
                   <div class="hero-kpi-label">Total supply</div>
@@ -2494,7 +2494,7 @@
                     <div class="meta-row">
                       <div class="meta-tag">
                         <div class="meta-label">Mint</div>
-                        <div class="meta-value">45&nbsp;$MON</div>
+                        <div class="meta-value">1&nbsp;USDC</div>
                       </div>
                       <div class="meta-tag">
                         <div class="meta-label">Protocol Fee</div>
@@ -2504,7 +2504,7 @@
                     <div class="meta-row">
                       <div class="meta-tag">
                         <div class="meta-label">Max / wallet</div>
-                        <div class="meta-value">100</div>
+                        <div class="meta-value">200</div>
                       </div>
                     </div>
                   </div>
@@ -2560,10 +2560,6 @@
                   <li><strong>Support a Builder:</strong> Your mint funds new tools and ecosystem growth.</li>
                 </ul>
                 <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
-                  <a href="https://magiceden.io/collections/monad/0xbD11e8799E1D48fe607B6a471C66de84522e49c1" target="_blank" rel="noopener noreferrer" class="btn" style="display: inline-flex; align-items: center; gap: 8px;">
-                    <span>View on Magic Eden</span>
-                    <span style="font-size: 18px;">→</span>
-                  </a>
                   <a href="https://opensea.io/collection/nomad-dogs" target="_blank" rel="noopener noreferrer" class="btn" style="display: inline-flex; align-items: center; gap: 8px;">
                     <span>View on OpenSea</span>
                     <span style="font-size: 18px;">→</span>
@@ -2579,9 +2575,9 @@
                 <p>Transparent numbers. No hidden gotchas.</p>
                 <ul class="card-list">
                   <li><strong>Supply:</strong> 4444 total Nomads.</li>
-                  <li><strong>Mint:</strong> 45&nbsp;$MON per Nomad (+ 15 $MON protocol fee) <span id="about-usd-price" style="color: var(--text-muted);"></span></li>
+                  <li><strong>Mint:</strong> 1&nbsp;USDC per Nomad (+ 15 $MON protocol fee) <span id="about-usd-price" style="color: var(--text-muted);"></span></li>
                   <li><strong>Reserved:</strong> 999 for Pitbit airdrops.</li>
-                  <li><strong>Max per wallet:</strong> 100 (Subject to change).</li>
+                  <li><strong>Max per wallet:</strong> 200 (Subject to change).</li>
                   <li><strong>Chain:</strong> Monad mainnet.</li>
                 </ul>
                 <p style="margin-top: 10px; font-size: 12px;">
@@ -2613,7 +2609,7 @@
                 <div class="mint-price">
                   <span class="mint-price-label">Price per Nomad</span>
                   <div style="display: flex; align-items: center; gap: 10px;">
-                    <span class="mint-price-value">45&nbsp;$MON <span id="mint-usd-price" style="font-size: 13px; color: var(--text-muted);"></span></span>
+                    <span class="mint-price-value">1&nbsp;USDC <span id="mint-usd-price" style="font-size: 13px; color: var(--text-muted);"></span></span>
                     <div class="live-stat" style="font-size: 10px; padding: 4px 8px;">
                       <div class="live-dot"></div>
                       <span style="font-weight: 500;">LIVE PRICE</span>
@@ -2669,7 +2665,7 @@
                 // Only the mint function (F13) ABI needed for this button
                 "function mint(uint256 amount) payable"
               ];
-              const pricePerMint = 60; // 45 $MON + 15 $MON protocol fee (update if needed)
+              const pricePerMint = 1; // 1 USDC + 15 $MON protocol fee (update if needed)
               const decimals = 18; // $MON is likely 18 decimals
 
               async function directMint() {
@@ -2681,8 +2677,8 @@
                 }
                 try {
                   const amount = parseInt(document.getElementById('mint-amount').value);
-                  if (isNaN(amount) || amount < 1 || amount > 100) {
-                    status.textContent = 'Enter a valid mint amount (1-100).';
+                  if (isNaN(amount) || amount < 1 || amount > 200) {
+                    status.textContent = 'Enter a valid mint amount (1-200).';
                     return;
                   }
                   status.textContent = 'Connecting wallet...';
@@ -3436,7 +3432,7 @@
                   <div class="remix-placeholder">Select options to preview your remix →</div>
                 </div>
               </div>
-              
+
               <div class="remix-export-actions">
                 <button class="btn" onclick="exportRemix('pfp')">
                   <span>Export as PFP (1:1)</span>
@@ -3558,7 +3554,7 @@
               <div class="faq-item">
                 <div class="faq-q">Where can I see secondary listings?</div>
                 <div class="faq-a">
-                  View Nomad Dogs on <a href="https://magiceden.io/collections/monad/0xbD11e8799E1D48fe607B6a471C66de84522e49c1" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none;">Magic Eden</a> or <a href="https://opensea.io/collection/nomad-dogs" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none;">OpenSea</a>. Always verify the contract address (0xbD11...49c1) matches before buying.
+                  View Nomad Dogs on <a href="https://opensea.io/collection/nomad-dogs" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none;">OpenSea</a>. Always verify the contract address (0xbD11...49c1) matches before buying.
                 </div>
               </div>
 
@@ -3586,7 +3582,7 @@
               <div class="faq-item">
                 <div class="faq-q">What wallet do I need?</div>
                 <div class="faq-a">
-                  Any Monad-compatible wallet works. MetaMask, Rabby, or similar. Make sure to add Monad network (Chain ID 143) and have $MON for minting and gas fees.
+                  Any Monad-compatible wallet works. MetaMask, Rabby, or similar. Make sure to add Monad network (Chain ID 143) and have USDC & $MON for minting and gas fees.
                 </div>
               </div>
             </div>
@@ -3611,7 +3607,7 @@
               <div class="faq-item">
                 <div class="faq-q">Can I mint multiple Nomads?</div>
                 <div class="faq-a">
-                  Yes, up to 100 per wallet. Batch minting is supported to save on gas fees if you want multiple Nomads in one transaction.
+                  Yes, up to 200 per wallet. Batch minting is supported to save on gas fees if you want multiple Nomads in one transaction.
                 </div>
               </div>
 
@@ -3660,7 +3656,6 @@
 
         <div class="footer-links">
           <div style="margin-bottom: 12px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;">Marketplaces</div>
-          <a href="https://magiceden.io/collections/monad/0xbD11e8799E1D48fe607B6a471C66de84522e49c1" target="_blank" rel="noopener noreferrer">Magic Eden</a>
           <a href="https://opensea.io/collection/nomad-dogs" target="_blank" rel="noopener noreferrer">OpenSea</a>
           <a href="https://monadscan.com/address/0xbD11e8799E1D48fe607B6a471C66de84522e49c1" target="_blank" rel="noopener noreferrer">Monadscan Explorer</a>
         </div>
@@ -3692,13 +3687,13 @@
     // ============================================
     const CONTRACT_ADDRESS = "0xbd11e8799e1d48fe607b6a471c66de84522e49c1";
     const CHAIN_ID = 143; // Monad network
-    
+
     // NFTs2Me Contract ABI - Correct function names
     const CONTRACT_ABI = [
       // Minting
       "function mint(uint256 amount) payable",
       "function mintingType() view returns (uint8)",
-      
+
       // Supply & Price - NFTs2Me specific function names
       "function totalSupply() view returns (uint256)",
       "function getPrice() view returns (uint256)",
@@ -3706,20 +3701,20 @@
       "function maxPerAddress() view returns (uint256)",
       "function maxPerMint() view returns (uint256)",
       "function reservedAmountForPresale() view returns (uint256)",
-      
+
       // Standard ERC721
       "function balanceOf(address owner) view returns (uint256)",
       "function ownerOf(uint256 tokenId) view returns (address)",
       "function tokenURI(uint256 tokenId) view returns (string)",
       "function name() view returns (string)",
       "function symbol() view returns (string)",
-      
+
       // Ownership & Admin
       "function owner() view returns (address)",
-      
+
       // Burning
       "function burn(uint256 tokenId) payable",
-      
+
       // Events
       "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)"
     ];
@@ -3758,7 +3753,7 @@
         const accounts = await window.ethereum.request({ 
           method: 'eth_requestAccounts' 
         });
-        
+
         userAddress = accounts[0];
         provider = new ethers.providers.Web3Provider(window.ethereum);
         signer = provider.getSigner();
@@ -3842,7 +3837,7 @@
         // Update price in UI if needed
         document.querySelectorAll('.hero-kpi-value').forEach(el => {
           if (el.parentElement.querySelector('.hero-kpi-label')?.textContent === 'Mint') {
-            el.innerHTML = `${priceInMON}&nbsp;$MON`;
+            el.innerHTML = `${priceInMON}&nbsp;USDC`;
           }
         });
 
@@ -3867,7 +3862,7 @@
         // Check user's current balance
         const currentBalance = await contract.balanceOf(userAddress);
         const maxPerWallet = await contract.maxPerAddress();
-        
+
         if (maxPerWallet.toNumber() > 0 && currentBalance.toNumber() + amount > maxPerWallet.toNumber()) {
           alert(`You can only mint ${maxPerWallet.toNumber()} total. You already have ${currentBalance.toNumber()}.`);
           return false;
@@ -3900,7 +3895,7 @@
 
         // Success!
         alert(`Successfully minted ${amount} Nomad(s)!\n\nTransaction: ${receipt.transactionHash}`);
-        
+
         // Refresh data
         await refreshContractData();
 
@@ -3910,20 +3905,20 @@
         return true;
       } catch (error) {
         console.error('Mint error:', error);
-        
+
         let errorMsg = 'Mint failed';
         if (error.code === 4001) {
           errorMsg = 'Transaction rejected by user';
         } else if (error.message) {
           errorMsg = error.message;
         }
-        
+
         alert(errorMsg);
-        
+
         const mintBtn = document.getElementById('mintButton');
         mintBtn.disabled = false;
         mintBtn.innerHTML = '<span>Mint Nomads</span>';
-        
+
         return false;
       }
     }
@@ -3975,7 +3970,7 @@
       const btn = document.getElementById('mobileMenuBtn');
       const menu = document.getElementById('mobileMenu');
       const overlay = document.getElementById('mobileOverlay');
-      
+
       btn.classList.toggle('active');
       menu.classList.toggle('active');
       overlay.classList.toggle('active');
@@ -3985,7 +3980,7 @@
       const btn = document.getElementById('mobileMenuBtn');
       const menu = document.getElementById('mobileMenu');
       const overlay = document.getElementById('mobileOverlay');
-      
+
       btn.classList.remove('active');
       menu.classList.remove('active');
       overlay.classList.remove('active');
@@ -3995,10 +3990,10 @@
     function openPortal() {
       const warpOverlay = document.getElementById('warpOverlay');
       const pitbitsRealm = document.getElementById('pitbitsRealm');
-      
+
       // Start warp animation
       warpOverlay.classList.add('active');
-      
+
       // Show realm after warp completes
       setTimeout(() => {
         pitbitsRealm.classList.add('active');
@@ -4009,16 +4004,16 @@
     function closePortal() {
       const warpOverlay = document.getElementById('warpOverlay');
       const pitbitsRealm = document.getElementById('pitbitsRealm');
-      
+
       // Start warp animation (circle expands to cover screen)
       warpOverlay.classList.add('active');
-      
+
       // Hide realm while warp is covering screen
       setTimeout(() => {
         pitbitsRealm.classList.remove('active');
         document.body.style.overflow = '';
       }, 400);
-      
+
       // After warp covers everything, close the warp (circle shrinks back)
       setTimeout(() => {
         warpOverlay.classList.remove('active');
@@ -4044,11 +4039,11 @@
     async function verifyRemixAccess() {
       const statusDiv = document.getElementById('remixVerifyStatus');
       statusDiv.innerHTML = '<div style="color: var(--text-muted);">Verifying access...</div>';
-      
+
       // Owner verification token
       const OWNER_TOKEN_ADDRESS = '0x00000000001594C61dD8a6804da9AB58eD2483ce';
       const OWNER_TOKEN_ID = '1079398619788753336914465116092180912095045241281';
-      
+
       try {
         // Connect wallet if not connected
         if (!provider || !userAddress) {
@@ -4063,16 +4058,16 @@
         const ownerTokenABI = [
           "function ownerOf(uint256 tokenId) view returns (address)"
         ];
-        
+
         try {
           const ownerTokenContract = new ethers.Contract(OWNER_TOKEN_ADDRESS, ownerTokenABI, provider);
           const tokenOwner = await ownerTokenContract.ownerOf(OWNER_TOKEN_ID);
-          
+
           if (tokenOwner.toLowerCase() === userAddress.toLowerCase()) {
             // User holds the owner token - grant access
             remixVerified = true;
             statusDiv.innerHTML = '<div style="color: var(--accent);">✓ Verified! You are the collection owner</div>';
-            
+
             setTimeout(() => {
               document.getElementById('remixVerifySection').style.display = 'none';
               document.getElementById('remixContent').classList.add('active');
@@ -4086,11 +4081,11 @@
         // Check NFT balance for regular holders
         const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
         const balance = await contract.balanceOf(userAddress);
-        
+
         if (balance.toNumber() > 0) {
           remixVerified = true;
           statusDiv.innerHTML = `<div style="color: var(--accent);">✓ Verified! You own ${balance.toNumber()} Nomad Dog(s)</div>`;
-          
+
           setTimeout(() => {
             document.getElementById('remixVerifySection').style.display = 'none';
             document.getElementById('remixContent').classList.add('active');
@@ -4106,66 +4101,66 @@
 
     function selectBackground(bg) {
       selectedBackground = bg;
-      
+
       // Update UI
       document.querySelectorAll('[data-bg]').forEach(option => {
         option.classList.remove('active');
       });
       document.querySelector(`[data-bg="${bg}"]`).classList.add('active');
-      
+
       updateRemixPreview();
     }
 
     function toggleOverlay(overlay, element) {
       element.classList.toggle('active');
-      
+
       const index = activeOverlays.indexOf(overlay);
       if (index > -1) {
         activeOverlays.splice(index, 1);
       } else {
         activeOverlays.push(overlay);
       }
-      
+
       updateRemixPreview();
     }
 
     function selectTraitCombo(combo) {
       selectedCombo = combo;
-      
+
       // Update UI
       document.querySelectorAll('[data-combo]').forEach(option => {
         option.classList.remove('active');
       });
       document.querySelector(`[data-combo="${combo}"]`).classList.add('active');
-      
+
       updateRemixPreview();
     }
 
     function updateRemixPreview() {
       const canvas = document.getElementById('remixCanvas');
-      
+
       // Build preview text (in production, this would composite actual images)
       let previewHTML = '<div style="text-align: center; color: var(--text);">';
       previewHTML += `<div style="font-size: 18px; margin-bottom: 12px; color: var(--accent);">Preview Mode</div>`;
       previewHTML += `<div style="font-size: 14px; margin-bottom: 8px;">Background: <strong>${selectedBackground}</strong></div>`;
-      
+
       if (activeOverlays.length > 0) {
         previewHTML += `<div style="font-size: 14px; margin-bottom: 8px;">Overlays: <strong>${activeOverlays.join(', ')}</strong></div>`;
       }
-      
+
       if (selectedCombo) {
         previewHTML += `<div style="font-size: 14px; margin-bottom: 8px;">Trait Combo: <strong>${selectedCombo}</strong></div>`;
       }
-      
+
       previewHTML += '<div style="margin-top: 16px; padding: 12px; background: rgba(70, 169, 255, 0.1); border-radius: 8px; font-size: 12px; color: var(--text-muted);">⏳ Image compositing will be available after NFT reveal. Your selections are being tracked for preview.</div>';
       previewHTML += '</div>';
-      
+
       canvas.innerHTML = previewHTML;
     }
 
     function exportRemix(format) {
       if (!remixVerified) return;
-      
+
       // In production, this would generate and download the actual image
       alert(`Export as ${format.toUpperCase()} - Coming soon! This will generate a downloadable image with your selected remix settings.`);
     }
@@ -4174,12 +4169,12 @@
       selectedBackground = 'original';
       activeOverlays = [];
       selectedCombo = null;
-      
+
       // Reset UI
       document.querySelectorAll('[data-bg], [data-combo]').forEach(el => el.classList.remove('active'));
       document.querySelector('[data-bg="original"]').classList.add('active');
       document.querySelectorAll('.remix-toggle').forEach(el => el.classList.remove('active'));
-      
+
       document.getElementById('remixCanvas').innerHTML = '<div class="remix-placeholder">Select options to preview your remix →</div>';
     }
 
@@ -4187,11 +4182,11 @@
     document.addEventListener('DOMContentLoaded', function() {
       const mobileMenuBtn = document.getElementById('mobileMenuBtn');
       const mobileOverlay = document.getElementById('mobileOverlay');
-      
+
       if (mobileMenuBtn) {
         mobileMenuBtn.addEventListener('click', toggleMobileMenu);
       }
-      
+
       if (mobileOverlay) {
         mobileOverlay.addEventListener('click', closeMobileMenu);
       }
@@ -4223,23 +4218,23 @@
         // Fetch MONAD price from CoinGecko API
         const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=monad&vs_currencies=usd');
         const data = await response.json();
-        
+
         if (data && data.monad && data.monad.usd) {
           const monadPriceUSD = data.monad.usd;
-          const mintPriceUSD = (50 * monadPriceUSD).toFixed(2);
+          const mintPriceUSD = 1;
           const usdText = `(~$${mintPriceUSD} USD)`;
-          
+
           // Update all USD price displays
           const heroUsdPrice = document.getElementById('hero-usd-price');
           const heroCardUsdChip = document.getElementById('hero-card-usd-chip');
           const aboutUsdPrice = document.getElementById('about-usd-price');
           const mintUsdPrice = document.getElementById('mint-usd-price');
-          
+
           if (heroUsdPrice) heroUsdPrice.textContent = usdText;
           if (heroCardUsdChip) heroCardUsdChip.textContent = usdText;
           if (aboutUsdPrice) aboutUsdPrice.textContent = usdText;
           if (mintUsdPrice) mintUsdPrice.textContent = usdText;
-          
+
           // Also update the mint total calculator
           window.monadPriceUSD = monadPriceUSD;
         }
@@ -4251,7 +4246,7 @@
 
     // Mint counter logic (UI only – hook your contract call to mintButton)
     (function () {
-      const PRICE = 50; // MON per Nomad
+      const PRICE = 1; // USD per Nomad
       const min = 1;
       const max = 20;
 
@@ -4265,15 +4260,15 @@
 
       function updateTotal() {
         const amount = parseInt(amountEl.textContent || "1", 10);
-        const monTotal = PRICE * amount;
-        let totalText = monTotal + "&nbsp;$MON";
-        
+        const usdTotal = PRICE * amount;
+        let totalText = usdTotal + "&nbsp;USDC";
+
         // Add USD equivalent if available
         if (window.monadPriceUSD) {
-          const usdTotal = (monTotal * window.monadPriceUSD).toFixed(2);
+          const usdTotal = (amount * window.monadPriceUSD).toFixed(2);
           totalText += ` <span style="font-size: 13px; color: var(--text-muted);">(~$${usdTotal} USD)</span>`;
         }
-        
+
         totalEl.innerHTML = totalText;
       }
 
@@ -4297,13 +4292,13 @@
 
       mintButton.addEventListener("click", async () => {
         const amount = parseInt(amountEl.textContent || "1", 10);
-        
+
         // Connect wallet if not connected
         if (!userAddress) {
           const connected = await connectWallet();
           if (!connected) return;
         }
-        
+
         // Execute mint
         await mintNFT(amount);
       });
@@ -4319,24 +4314,24 @@
           // Use a public provider to read contract data
           const publicProvider = new ethers.providers.JsonRpcProvider(NETWORK_CONFIG.rpcUrls[0]);
           const publicContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, publicProvider);
-          
+
           const totalSupply = await publicContract.totalSupply();
           const maxSupply = await publicContract.collectionSize();
-          
+
           const minted = totalSupply.toNumber();
           const maxNum = maxSupply.toNumber();
           const reservedNum = 784; // Fixed reserved amount for Pitbits holders & team
           const remaining = maxNum - minted - reservedNum;
           const progressCount = minted + reservedNum; // Progress = minted + reserved
-          
+
           updateProgressBar(progressCount, maxNum);
-          
+
           // Update live mint counts in traits section
           const liveMintCount = document.getElementById('liveMintCount');
           const liveAvailable = document.getElementById('liveAvailable');
           if (liveMintCount) liveMintCount.textContent = progressCount; // Show minted + reserved
           if (liveAvailable) liveAvailable.textContent = remaining;
-          
+
           console.log('Loaded contract data:', {
             minted: minted,
             reserved: reservedNum,
@@ -4346,21 +4341,21 @@
           });
         } catch (error) {
           console.error('Error loading contract data:', error);
-          
+
           // Fallback to static data if RPC fails
           const total = 4444;
           const minted = 51;
           const reserved = 784;
           const remaining = total - minted - reserved;
           const progressCount = minted + reserved;
-          
+
           updateProgressBar(progressCount, total);
-          
+
           const liveMintCount = document.getElementById('liveMintCount');
           const liveAvailable = document.getElementById('liveAvailable');
           if (liveMintCount) liveMintCount.textContent = progressCount; // Show minted + reserved
           if (liveAvailable) liveAvailable.textContent = remaining;
-          
+
           console.log('Using fallback static data due to RPC error');
         }
       }
